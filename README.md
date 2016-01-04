@@ -6,6 +6,7 @@ Purpose: runpolicy is a wrapper for mmapplypolicy that runs a policy provided as
 input file for a file system or directory provided as input. It also passes 
 arguments to the policy itself such as the FILESYSTEM and EEPOOL
 
+------------------------
 
 Script Name: receiver.sh
 
