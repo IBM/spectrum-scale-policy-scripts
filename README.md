@@ -15,3 +15,12 @@ list of files to an external pool script. The external pool script can then
 process the files according to the needs. This script is an external pool script
 that receives the input from a list policy and prints all the file names in an 
 output file. Of course you can add other operations.
+
+------------------------
+
+Script Name: makeimmutable.sh
+
+Purpose: This script is an external pool script that receives the input from a 
+list policy and sets all files identified by the LIST policy to immuable using 
+the mmchattr command. The retention period is defined in the policy itself and 
+is applied to each file by setting the retention time to current date and time plus retention period
