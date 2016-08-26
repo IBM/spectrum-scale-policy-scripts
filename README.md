@@ -23,4 +23,17 @@ Script Name: makeimmutable.sh
 Purpose: This script is an external pool script that receives the input from a 
 list policy and sets all files identified by the LIST policy to immuable using 
 the mmchattr command. The retention period is defined in the policy itself and 
-is applied to each file by setting the retention time to current date and time plus retention period
+is applied to each file by setting the retention time to current date and time 
+plus retention period
+
+------------------------
+
+Script Name: list.sh
+
+Purpose: This script is a wrapper to run custom LIST policies. The list 
+policy files are installed in the same path as the script list.sh. The list 
+policy files have a specific naming convention with the "operation code" 
+in the file name. The script list.sh is invoked with the "operation code"
+that executes the underlying policy file and prints the selected files to 
+STDOUT.
+
