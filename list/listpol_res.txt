@@ -1,0 +1,9 @@
+/* Define exclude list to exclude SpaceMan and snapshots */
+define( exclude_list,(PATH_NAME LIKE '%/.SpaceMan/%' OR PATH_NAME LIKE '%/.snapshots/%') )
+
+/* Define is resident */
+define( is_resident,(MISC_ATTRIBUTES NOT LIKE '%M%') )
+
+/* list rule to list all resident files */
+RULE EXTERNAL LIST 'res' EXEC ''
+RULE 'list_res' LIST 'res' WHERE ( is_resident )  AND ( NOT (exclude_list) )

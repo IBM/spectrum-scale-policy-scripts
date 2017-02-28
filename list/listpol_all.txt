@@ -1,0 +1,23 @@
+/* Define exclude list to exclude SpaceMan and snapshots */
+define( exclude_list,(PATH_NAME LIKE '%/.SpaceMan/%' OR PATH_NAME LIKE '%/.snapshots/%') )
+
+/* Define is migrated */
+define( is_migrated,(MISC_ATTRIBUTES LIKE '%V%') )
+
+/* list rule to list all migrated files */
+RULE EXTERNAL LIST 'mig' EXEC ''
+RULE 'list_mig' LIST 'mig' WHERE ( is_migrated )  AND ( NOT (exclude_list) )
+
+/* Define is premigrated */
+define( is_premigrated,(MISC_ATTRIBUTES LIKE '%M%' AND MISC_ATTRIBUTES NOT LIKE '%V%') )
+
+/* list rule to list all premigrated files */
+RULE EXTERNAL LIST 'pmig' EXEC ''
+RULE 'list_pmig' LIST 'pmig' WHERE ( is_premigrated )  AND ( NOT (exclude_list) )
+
+/* Define is resident */
+define( is_resident,(MISC_ATTRIBUTES NOT LIKE '%M%') )
+
+/* list rule to list all resident files */
+RULE EXTERNAL LIST 'res' EXEC ''
+RULE 'list_res' LIST 'res' WHERE ( is_resident )  AND ( NOT (exclude_list) )
