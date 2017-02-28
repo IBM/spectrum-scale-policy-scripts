@@ -28,74 +28,74 @@ Output files including these files are stored in `/tmp/gpfs.list.<op-code>`
 ## Examples:
 1. LIST policy to identify all migrated files, copy and paste this to file listpol_mig.txt
 
-  ```
-  /* Define exclude list to exclude SpaceMan and snapshots */
-  define( exclude_list,(PATH_NAME LIKE '%/.SpaceMan/%' OR PATH_NAME LIKE '%/.snapshots/%') )
-  /* Define is migrated */
-  define( is_migrated,(MISC_ATTRIBUTES LIKE '%V%') )
-  /* list rule to list all migrated files */
-  RULE EXTERNAL LIST 'mig' EXEC ''
-  RULE 'list_mig' LIST 'mig' WHERE ( is_migrated )  AND ( NOT (exclude_list) )
-  ```
+    ```
+    /* Define exclude list to exclude SpaceMan and snapshots */
+    define( exclude_list,(PATH_NAME LIKE '%/.SpaceMan/%' OR PATH_NAME LIKE '%/.snapshots/%') )
+    /* Define is migrated */
+    define( is_migrated,(MISC_ATTRIBUTES LIKE '%V%') )
+    /* list rule to list all migrated files */
+    RULE EXTERNAL LIST 'mig' EXEC ''
+    RULE 'list_mig' LIST 'mig' WHERE ( is_migrated )  AND ( NOT (exclude_list) )
+    ```
 
-   Execution: `list.sh mig /<fspath>`
+    Execution: `list.sh mig /<fspath>`
 
-   output file name: `/tmp/gpfs.list.mig`
+    output file name: `/tmp/gpfs.list.mig`
 
 2. LIST policy to identify all premigrated files, copy and paste this to file listpol_pmig.txt
 
-  ```
-  /* Define exclude list to exclude SpaceMan and snapshots */
-  define( exclude_list,(PATH_NAME LIKE '%/.SpaceMan/%' OR PATH_NAME LIKE '%/.snapshots/%') )
-  /* Define is premigrated */
-  define( is_premigrated,(MISC_ATTRIBUTES LIKE '%M%' AND MISC_ATTRIBUTES NOT LIKE '%V%') )
-  /* list rule to list all premigrated files */
-  RULE EXTERNAL LIST 'pmig' EXEC ''
-  RULE 'list_pmig' LIST 'pmig' WHERE ( is_premigrated )  AND ( NOT (exclude_list) )
-  ```
+    ```
+    /* Define exclude list to exclude SpaceMan and snapshots */
+    define( exclude_list,(PATH_NAME LIKE '%/.SpaceMan/%' OR PATH_NAME LIKE '%/.snapshots/%') )
+    /* Define is premigrated */
+    define( is_premigrated,(MISC_ATTRIBUTES LIKE '%M%' AND MISC_ATTRIBUTES NOT LIKE '%V%') )
+    /* list rule to list all premigrated files */
+    RULE EXTERNAL LIST 'pmig' EXEC ''
+    RULE 'list_pmig' LIST 'pmig' WHERE ( is_premigrated )  AND ( NOT (exclude_list) )
+    ```
 
-   Execution: `list.sh pmig /<fspath>`
+    Execution: `list.sh pmig /<fspath>`
 
-   output file name: `/tmp/gpfs.list.pmig`
+    output file name: `/tmp/gpfs.list.pmig`
 
 3. LIST policy to identify all resident files, copy and paste this to file listpol_res.txt
 
-  ```
-  /* Define exclude list to exclude SpaceMan and snapshots */
-  define( exclude_list,(PATH_NAME LIKE '%/.SpaceMan/%' OR PATH_NAME LIKE '%/.snapshots/%') )
-  /* Define is resident */
-  define( is_resident,(MISC_ATTRIBUTES NOT LIKE '%M%') )
-  /* list rule to list all resident files */
-  RULE EXTERNAL LIST 'res' EXEC ''
-  RULE 'list_res' LIST 'res' WHERE ( is_resident )  AND ( NOT (exclude_list) )
-  ```
+    ```
+    /* Define exclude list to exclude SpaceMan and snapshots */
+    define( exclude_list,(PATH_NAME LIKE '%/.SpaceMan/%' OR PATH_NAME LIKE '%/.snapshots/%') )
+    /* Define is resident */
+    define( is_resident,(MISC_ATTRIBUTES NOT LIKE '%M%') )
+    /* list rule to list all resident files */
+    RULE EXTERNAL LIST 'res' EXEC ''
+    RULE 'list_res' LIST 'res' WHERE ( is_resident )  AND ( NOT (exclude_list) )
+    ```
 
-   Execution: `list.sh res /<fspath>`
+    Execution: `list.sh res /<fspath>`
 
-   output file name: `/tmp/gpfs.list.res`
+    output file name: `/tmp/gpfs.list.res`
 
 3. LIST policy to identify files in resident, migrated and premigrated state in a summary view, copy and paste this to file listpol_res.txt
 
-  ```
-  /* Define exclude list to exclude SpaceMan and snapshots */
-  define( exclude_list,(PATH_NAME LIKE '%/.SpaceMan/%' OR PATH_NAME LIKE '%/.snapshots/%') )
-  /* Define is migrated */
-  define( is_migrated,(MISC_ATTRIBUTES LIKE '%V%') )
-  /* list rule to list all migrated files */
-  RULE EXTERNAL LIST 'mig' EXEC ''
-  RULE 'list_mig' LIST 'mig' WHERE ( is_migrated )  AND ( NOT (exclude_list) )
-  /* Define is premigrated */
-  define( is_premigrated,(MISC_ATTRIBUTES LIKE '%M%' AND MISC_ATTRIBUTES NOT LIKE '%V%') )
-  /* list rule to list all premigrated files */
-  RULE EXTERNAL LIST 'pmig' EXEC ''
-  RULE 'list_pmig' LIST 'pmig' WHERE ( is_premigrated )  AND ( NOT (exclude_list) )
-  /* Define is resident */
-  define( is_resident,(MISC_ATTRIBUTES NOT LIKE '%M%') )
-  /* list rule to list all resident files */
-  RULE EXTERNAL LIST 'res' EXEC ''
-  RULE 'list_res' LIST 'res' WHERE ( is_resident )  AND ( NOT (exclude_list) )
-  ```
+    ```
+    /* Define exclude list to exclude SpaceMan and snapshots */
+    define( exclude_list,(PATH_NAME LIKE '%/.SpaceMan/%' OR PATH_NAME LIKE '%/.snapshots/%') )
+    /* Define is migrated */
+    define( is_migrated,(MISC_ATTRIBUTES LIKE '%V%') )
+    /* list rule to list all migrated files */
+    RULE EXTERNAL LIST 'mig' EXEC ''
+    RULE 'list_mig' LIST 'mig' WHERE ( is_migrated )  AND ( NOT (exclude_list) )
+    /* Define is premigrated */
+    define( is_premigrated,(MISC_ATTRIBUTES LIKE '%M%' AND MISC_ATTRIBUTES NOT LIKE '%V%') )
+    /* list rule to list all premigrated files */
+    RULE EXTERNAL LIST 'pmig' EXEC ''
+    RULE 'list_pmig' LIST 'pmig' WHERE ( is_premigrated )  AND ( NOT (exclude_list) )
+    /* Define is resident */
+    define( is_resident,(MISC_ATTRIBUTES NOT LIKE '%M%') )
+    /* list rule to list all resident files */
+    RULE EXTERNAL LIST 'res' EXEC ''
+    RULE 'list_res' LIST 'res' WHERE ( is_resident )  AND ( NOT (exclude_list) )
+    ```
 
-   Execution: `list.sh all /<fspath>`
-   
-   output file names: `/tmp/gpfs.list.res`, `/tmp/gpfs.list.mig`, `/tmp/gpfs.list.pmig`
+    Execution: `list.sh all /<fspath>`
+
+    output file names: `/tmp/gpfs.list.res`, `/tmp/gpfs.list.mig`, `/tmp/gpfs.list.pmig`
