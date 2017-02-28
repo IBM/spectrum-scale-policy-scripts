@@ -13,8 +13,8 @@ This script is a wrapper to run custom LIST policies. The list policy files are 
 list.sh <op-code> <fspath>
 ```
 
-*op-code* is the name of the policy to be executed according to the above naming conventions
-*fspath* is the file system or directory path subject for the list policy
+- *op-code* is the name of the policy to be executed according to the above naming conventions
+- *fspath* is the file system or directory path subject for the list policy
 
 ## Processing:
 The script checks if the list policy file exists, executes the LIST policy using mmapplypolicy and lists the files matching the rule. The output files are written to `/tmp/gpfs.list.<op-code>` and stored there until the next run.
@@ -38,8 +38,9 @@ Output files including these files are stored in `/tmp/gpfs.list.<op-code>`
   RULE 'list_mig' LIST 'mig' WHERE ( is_migrated )  AND ( NOT (exclude_list) )
   ```
 
-  Execution: `list.sh mig /<fspath>`
-  output file name: `/tmp/gpfs.list.mig`
+   Execution: `list.sh mig /<fspath>`
+
+   output file name: `/tmp/gpfs.list.mig`
 
 2. LIST policy to identify all premigrated files, copy and paste this to file listpol_pmig.txt
 
@@ -53,8 +54,9 @@ Output files including these files are stored in `/tmp/gpfs.list.<op-code>`
   RULE 'list_pmig' LIST 'pmig' WHERE ( is_premigrated )  AND ( NOT (exclude_list) )
   ```
 
-  Execution: `list.sh pmig /<fspath>`
-  output file name: `/tmp/gpfs.list.pmig`
+   Execution: `list.sh pmig /<fspath>`
+
+   output file name: `/tmp/gpfs.list.pmig`
 
 3. LIST policy to identify all resident files, copy and paste this to file listpol_res.txt
 
@@ -68,8 +70,9 @@ Output files including these files are stored in `/tmp/gpfs.list.<op-code>`
   RULE 'list_res' LIST 'res' WHERE ( is_resident )  AND ( NOT (exclude_list) )
   ```
 
-  Execution: `list.sh res /<fspath>`
-  output file name: `/tmp/gpfs.list.res`
+   Execution: `list.sh res /<fspath>`
+
+   output file name: `/tmp/gpfs.list.res`
 
 3. LIST policy to identify files in resident, migrated and premigrated state in a summary view, copy and paste this to file listpol_res.txt
 
@@ -93,5 +96,6 @@ Output files including these files are stored in `/tmp/gpfs.list.<op-code>`
   RULE 'list_res' LIST 'res' WHERE ( is_resident )  AND ( NOT (exclude_list) )
   ```
 
-  Execution: `list.sh all /<fspath>`
-  output file names: `/tmp/gpfs.list.res`, `/tmp/gpfs.list.mig`, `/tmp/gpfs.list.pmig`
+   Execution: `list.sh all /<fspath>`
+   
+   output file names: `/tmp/gpfs.list.res`, `/tmp/gpfs.list.mig`, `/tmp/gpfs.list.pmig`
