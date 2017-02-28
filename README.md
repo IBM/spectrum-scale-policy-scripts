@@ -28,7 +28,7 @@ plus retention period
 
 ------------------------
 
-Script Name: [list.sh](list/README.md)
+Script Name: [list.sh](list/)
 
 Purpose: This script is a wrapper to run custom LIST policies. The list
 policy files are installed in the same path as the script list.sh. The list
