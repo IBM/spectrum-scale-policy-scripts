@@ -1,0 +1,14 @@
+/* define some file attributes */
+define(is_premigrated,(MISC_ATTRIBUTES LIKE '%M' AND MISC_ATTRIBUTES NOT LIKE '%V'))
+define(is_resident,(MISC_ATTRIBUTES NOT LIKE '%M%') )
+
+/* define access age */
+define( access_age,(DAYS(CURRENT_TIMESTAMP) - DAYS(ACCESS_TIME)) )
+
+/* define external pool with special script*/
+RULE 'hsmexternalpool' EXTERNAL POOL 'hsm' EXEC
+'/usr/lpp/mmfs/samples/ilm/mmpolicyExec-hsm.tor' OPTS '-v'
+
+/* define recall rule */
+RULE 'recall' MIGRATE FROM POOL 'hsm' TO POOL 'system' WHERE NOT
+(is_resident) AND NOT (is_premigrated) and (access_age < 5)
