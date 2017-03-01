@@ -1,4 +1,4 @@
-# list.sh
+# List policy script
 
 ## Description:
 This script is a wrapper to run custom LIST policies. The list policy files are installed in the same path as the script list.sh. The list policy files have a specific naming convention with the "operation code" in the file name. The script list.sh is invoked with the "operation code" that executes the underlying policy file and prints the selected files to STDOUT.
