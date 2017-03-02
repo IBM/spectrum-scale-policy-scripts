@@ -1,0 +1,11 @@
+--- mmpolicyExec-hsm.sample.orig	2017-03-02 11:06:46.255556283 +0100
++++ mmpolicyExec-hsm.sample	2017-03-02 11:14:21.964283202 +0100
+@@ -107,7 +107,7 @@
+ #    Command Options Files
+ $MigrateFormat = "%s %s -filelist=%s";
+ $PremigrateFormat = "%s %s -premigrate -filelist=%s";
+-$RecallFormat = "%s %s -filelist=%s";
++$RecallFormat = "%s %s -resident -filelist=%s /sample_fs";
+
+ # Set command options
+ $VerboseCommandOption = "-detail";
