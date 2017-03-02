@@ -1,14 +1,23 @@
 /* define some file attributes */
-define(is_premigrated,(MISC_ATTRIBUTES LIKE '%M' AND MISC_ATTRIBUTES NOT LIKE '%V'))
-define(is_resident,(MISC_ATTRIBUTES NOT LIKE '%M%') )
+define(not_zero_byte, (FILE_SIZE > 0))
+define(is_premigrated, (MISC_ATTRIBUTES LIKE '%M' AND MISC_ATTRIBUTES NOT LIKE '%V'))
+define(is_migrated, (MISC_ATTRIBUTES LIKE '%V'))
+define(is_resident, (MISC_ATTRIBUTES NOT LIKE '%M%'))
 
 /* define access age */
-define( access_age,(DAYS(CURRENT_TIMESTAMP) - DAYS(ACCESS_TIME)) )
+define(access_age, (DAYS(CURRENT_TIMESTAMP) - DAYS(ACCESS_TIME)))
 
-/* define external pool with special script*/
-RULE 'hsmexternalpool' EXTERNAL POOL 'hsm' EXEC
-'/usr/lpp/mmfs/samples/ilm/mmpolicyExec-hsm.tor' OPTS '-v'
+/* define path to be recalled */
+/********************************/
+/*** this needs to be adapted ***/
+/********************************/
+define(recall_dir, (PATH_NAME LIKE '/sample_fs/sample_dir/%'))
+
+/* define external pool script */
+RULE 'hsmexternalpool' EXTERNAL POOL 'hsm' EXEC '/usr/lpp/mmfs/samples/ilm/mmpolicyExec-hsm.sample' OPTS '-v'
 
 /* define recall rule */
-RULE 'recall' MIGRATE FROM POOL 'hsm' TO POOL 'system' WHERE NOT
-(is_resident) AND NOT (is_premigrated) and (access_age < 5)
+RULE 'recall' MIGRATE FROM POOL 'hsm' TO POOL 'system' WHERE (NOT (is_resident) AND
+                                                              NOT (is_premigrated) AND
+                                                              (not_zero_byte) AND
+                                                              (recall_dir))
