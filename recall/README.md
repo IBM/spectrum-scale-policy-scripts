@@ -7,37 +7,37 @@ The policy engine can be used to recall large numbers of files from an external 
 
 1. Modify the sample policy `recpol.txt` to select the files you intend to recall. Line 14 in that policy contains the selection criteria:
 
-   ```
-   define(recall_dir, (PATH_NAME LIKE '/sample_fs/sample_dir/%'))
-   ```
+    ```
+    define(recall_dir, (PATH_NAME LIKE '/sample_fs/sample_dir/%'))
+    ```
 
-   Adjust the path as required.
+    Adjust the path as required.
 
 2. Run the policy to recall the actual data:
 
-   ```
-   # mmapplypolicy <fsname> -P recpol.txt -N node1,node2 -m 4 –B 1000 -s <local-work-dir> [-I test]
-   ```
+    ```
+    # mmapplypolicy <fsname> -P recpol.txt -N node1,node2 -m 4 –B 1000 -s <local-work-dir> [-I test]
+    ```
 
-   - `-N node1,node2`
+    - `-N node1,node2`
 
-     Specifies the HSM nodes or nodeclass to perform the policy scan, as well as the subsequent recall operation.
+      Specifies the HSM nodes or nodeclass to perform the policy scan, as well as the subsequent recall operation.
 
-   - `-m 4 (ThreadLevel)`
+    - `-m 4 (ThreadLevel)`
 
-     With two HSM nodes recalling the actual data, this will result in ~8 tape mounts on the TSM server. However, this number is not guaranteed... So you will need to monitor TSM server activity and potentially adjust this setting as required.
+      With two HSM nodes recalling the actual data, this will result in ~8 tape mounts on the TSM server. However, this number is not guaranteed... So you will need to monitor TSM server activity and potentially adjust this setting as required.
 
-   - `‐B 1000 (MaxFiles)`
+    - `‐B 1000 (MaxFiles)`
 
-     A batch size of 1000-2000 files is probably the minimum, and will only make sense for fewer large files. In directories with many small files it is suggested to raise this parameter.
+      A batch size of 1000-2000 files is probably the minimum, and will only make sense for fewer large files. In directories with many small files it is suggested to raise this parameter.
 
-   - `-s <local-work-dir>`
+    - `-s <local-work-dir>`
 
-     Provide a directory with sufficient capacity as scratch space for temporary data (e.g. file lists) used during the policy scan and recall operation.
+      Provide a directory with sufficient capacity as scratch space for temporary data (e.g. file lists) used during the policy scan and recall operation.
 
-   - `-I test`
+    - `-I test`
 
-     Optionally performs a dry-run (test) of the recall operation. This will evaluate the policy with the given path definition, and report on the amount of data which would be transferred. Remove this argument to perform the actual data recall.
+      Optionally performs a dry-run (test) of the recall operation. This will evaluate the policy with the given path definition, and report on the amount of data which would be transferred. Remove this argument to perform the actual data recall.
 
 3. It is recommended to create multiple copies of the `recpol.txt` file in order to recall independent batches of files as required.
 
