@@ -53,6 +53,6 @@ Both these modifications can be realized by applying the patch which is shipped 
 patch -b /usr/lpp/mmfs/samples/ilm/mmpolicyExec-hsm.sample mmpolicyExec-hsm.sample.patch
 ```
 
-Subsequently, the name of the filesystem needs to be adapted in fore mentioned script. Simply search for `sample_fs` in a line starting with `$RecallFormat`. Replace `sample_fs` with the actual name of the filesystem.
+Subsequently, the name of the filesystem needs to be adapted in fore mentioned script. Simply search for `sample_fs` in a line starting with `$RecallFormat`. Replace `/sample_fs` with the actual mountpoint of the filesystem.
 
 Note that this modification needs to be performed on each HSM node in order to enable Spectrum Protect tape-optimized recall operation.
