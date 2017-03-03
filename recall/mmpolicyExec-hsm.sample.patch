@@ -1,11 +1,38 @@
---- mmpolicyExec-hsm.sample.orig	2017-03-02 11:06:46.255556283 +0100
-+++ mmpolicyExec-hsm.sample	2017-03-02 11:14:21.964283202 +0100
-@@ -107,7 +107,7 @@
+--- mmpolicyExec-hsm.sample.orig	2017-03-03 13:16:40.336792141 +0100
++++ mmpolicyExec-hsm.sample	2017-03-03 13:19:37.048514666 +0100
+@@ -96,6 +96,7 @@
+ # Initialize global vars
+ $Verbose = 0;
+ $VerboseOption = "";
++$FileSystem = "";
+
+
+ # Set binding to HSM commands
+@@ -107,7 +108,7 @@
  #    Command Options Files
  $MigrateFormat = "%s %s -filelist=%s";
  $PremigrateFormat = "%s %s -premigrate -filelist=%s";
 -$RecallFormat = "%s %s -filelist=%s";
-+$RecallFormat = "%s %s -resident -filelist=%s /sample_fs";
++$RecallFormat = "%s %s -resident -filelist=%s %s";
 
  # Set command options
  $VerboseCommandOption = "-detail";
+@@ -135,6 +136,10 @@
+         $Verbose = 1;
+         $VerboseOption = $VerboseCommandOption;
+     }
++    elsif($opt =~ m/-fs=(.*)/) {
++        $opt =~ s/-fs=//g;
++        $FileSystem = $opt;
++    }
+ }
+
+ print "$0 $command $filelist @ARGV\n" if ($Verbose > 0);
+@@ -249,7 +254,7 @@
+     }
+     elsif ($command eq "RECALL") {
+         $syscmd = sprintf($RecallFormat,
+-                          $RecallCommand, $VerboseOption, $hsmfilelist);
++                          $RecallCommand, $VerboseOption, $hsmfilelist, $FileSystem);
+     }
+     print "$syscmd\n" if ($Verbose > 0);

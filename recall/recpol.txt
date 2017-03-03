@@ -9,12 +9,15 @@ define(access_age, (DAYS(CURRENT_TIMESTAMP) - DAYS(ACCESS_TIME)))
 
 /* define path to be recalled */
 /********************************/
-/*** this needs to be adapted ***/
+/*** path needs to be adapted ***/
 /********************************/
 define(recall_dir, (PATH_NAME LIKE '/sample_fs/sample_dir/%'))
 
 /* define external pool script */
-RULE 'hsmexternalpool' EXTERNAL POOL 'hsm' EXEC '/usr/lpp/mmfs/samples/ilm/mmpolicyExec-hsm.sample' OPTS '-v'
+/**************************************/
+/*** filesystem needs to be adapted ***/
+/**************************************/
+RULE 'hsmexternalpool' EXTERNAL POOL 'hsm' EXEC '/usr/lpp/mmfs/samples/ilm/mmpolicyExec-hsm.sample' OPTS '-v -fs=/sample_fs'
 
 /* define recall rule */
 RULE 'recall' MIGRATE FROM POOL 'hsm' TO POOL 'system' WHERE (NOT (is_resident) AND

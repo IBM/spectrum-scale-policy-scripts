@@ -8,7 +8,9 @@ The policy engine can be used to recall large numbers of files from an external 
 1. Modify the sample policy `recpol.txt` to select the files you intend to recall. Line 14 in that policy contains the selection criteria:
 
     ```
+    ...
     define(recall_dir, (PATH_NAME LIKE '/sample_fs/sample_dir/%'))
+    ...
     ```
 
     Adjust the path as required.
@@ -45,14 +47,20 @@ The policy engine can be used to recall large numbers of files from an external 
 
 The HSM recall script which is shipped with (certain versions of) Spectrum Scale does not facilitate a Spectrum Protect tape-optimized recall by default. However, the script can be modified in order to optimize performance during bulk recalls using the policy engine.
 
-Furthermore, bulk-recalls are most frequently used to ultimately recall data from external pools prior to a system migration, or in preparation of disabling HSM altogether. Performance can be improved in both such scenarios by recalling files into resident state. By default, files would be recalled into premigrated state - but the HSM recall script can be modified to recall data into resident state right away.
+Furthermore, bulk-recalls are frequently used to ultimately recall data from external pools prior to a system migration, or in preparation of disabling HSM altogether. Performance can be improved in both such scenarios by recalling files into resident state. By default, files would be recalled into premigrated state - but the HSM recall script can be modified to recall data into resident state straight away.
 
-Both these modifications can be realized by applying the patch which is shipped with this project on all HSM nodes:
+Both these modifications can be implemented by applying the patch which is shipped with this project on all HSM nodes:
 
 ```
-patch -b /usr/lpp/mmfs/samples/ilm/mmpolicyExec-hsm.sample mmpolicyExec-hsm.sample.patch
+# patch -b /usr/lpp/mmfs/samples/ilm/mmpolicyExec-hsm.sample mmpolicyExec-hsm.sample.patch
 ```
 
-Subsequently, the name of the filesystem needs to be adapted in fore mentioned script. Simply search for `sample_fs` in a line starting with `$RecallFormat`. Replace `/sample_fs` with the actual mountpoint of the filesystem.
+Furthermore, the mountpoint of the filesystem needs to be adapted in fore mentioned policy. Modify the sample policy `recpol.txt` to contain the filesystem mountpoint to which you intend to recall to. Line 20 in that policy contains the external pool definition:
+
+```
+...
+RULE 'hsmexternalpool' EXTERNAL POOL 'hsm' EXEC '/usr/lpp/mmfs/samples/ilm/mmpolicyExec-hsm.sample' OPTS '-v -fs=/sample_fs'
+...
+```
 
 Note that this modification needs to be performed on each HSM node in order to enable Spectrum Protect tape-optimized recall operation.
