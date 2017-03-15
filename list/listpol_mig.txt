@@ -6,4 +6,4 @@ define( is_migrated,(MISC_ATTRIBUTES LIKE '%V%') )
 
 /* list rule to list all migrated files */
 RULE EXTERNAL LIST 'mig' EXEC ''
-RULE 'list_mig' LIST 'mig' WHERE ( is_migrated )  AND ( NOT (exclude_list) )
+RULE 'list_mig' LIST 'mig' SHOW ( varchar(file_size) ) WHERE ( is_migrated )  AND ( NOT (exclude_list) )

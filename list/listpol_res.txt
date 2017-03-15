@@ -6,4 +6,4 @@ define( is_resident,(MISC_ATTRIBUTES NOT LIKE '%M%') )
 
 /* list rule to list all resident files */
 RULE EXTERNAL LIST 'res' EXEC ''
-RULE 'list_res' LIST 'res' WHERE ( is_resident )  AND ( NOT (exclude_list) )
+RULE 'list_res' LIST 'res' SHOW ( varchar(file_size) ) WHERE ( is_resident )  AND ( NOT (exclude_list) )
