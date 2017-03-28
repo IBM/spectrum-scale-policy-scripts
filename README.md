@@ -18,7 +18,7 @@ output file. Of course you can add other operations.
 
 ------------------------
 
-Script Name: makeimmutable.sh
+Script Name: [makeimmutable.sh](immutable/) - Set files to immutable
 
 Purpose: This script is an external pool script that receives the input from a
 list policy and sets all files identified by the LIST policy to immutable using
