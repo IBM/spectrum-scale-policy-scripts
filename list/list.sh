@@ -42,6 +42,9 @@ function syntax
   echo
 }
 
+#set number format
+export LC_NUMERIC="en_US.UTF-8"
+
 #check first argument to be state
 if [[ -z "$1" ]];
 then
