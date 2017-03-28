@@ -36,3 +36,9 @@ policy files have a specific naming convention with the "operation code"
 in the file name. The script list.sh is invoked with the "operation code"
 that executes the underlying policy file and prints the selected files to
 STDOUT.
+
+------------------------
+
+[Recall policy](recall/)
+
+The policy engine can be used to recall large numbers of files from an external pool, e.g. from tape. The policy file provided with this project can act as a template for performing such bulk recalls.
