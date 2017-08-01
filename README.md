@@ -19,7 +19,7 @@ output file. Of course you can add other operations.
 
 ------------------------
 
-Script Name: [makeimmutable.sh](immutable/) - Set files to immutable
+[makeimmutable](immutable/) - Set files to immutable
 
 Purpose: This script is an external pool script that receives the input from a
 list policy and sets all files identified by the LIST policy to immutable using
@@ -29,7 +29,7 @@ plus retention period
 
 ------------------------
 
-Script Name: [list.sh](list/) - List policy script
+[list](list/) - List policy script
 
 Purpose: This script is a wrapper to run custom LIST policies. The list
 policy files are installed in the same path as the script list.sh. The list
