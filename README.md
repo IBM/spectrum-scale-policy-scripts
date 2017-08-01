@@ -19,7 +19,7 @@ output file. Of course you can add other operations.
 
 ------------------------
 
-[makeimmutable](immutable/) - Set files to immutable
+Folder [immutable](immutable/) - Set files to immutable
 
 Purpose: This script is an external pool script that receives the input from a
 list policy and sets all files identified by the LIST policy to immutable using
@@ -29,7 +29,7 @@ plus retention period
 
 ------------------------
 
-[list](list/) - List policy script
+Folder [list](list/) - List policy script
 
 Purpose: This script is a wrapper to run custom LIST policies. The list
 policy files are installed in the same path as the script list.sh. The list
@@ -40,6 +40,6 @@ STDOUT.
 
 ------------------------
 
-[Recall policy](recall/)
+Folder [Recall](recall/)
 
 The policy engine can be used to recall large numbers of files from an external pool, e.g. from tape. The policy file provided with this project can act as a template for performing such bulk recalls.
