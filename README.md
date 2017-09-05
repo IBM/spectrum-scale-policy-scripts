@@ -42,10 +42,22 @@ STDOUT.
 
 Folder [Recall](recall/)
 
-The policy engine can be used to recall large numbers of files from an external pool, e.g. from tape. The policy file provided with this project can act as a template for performing such bulk recalls.
+Purpose: This folder contains script and policies to drive tape optimized recalls
+with TSM HSM or Spectrum Archive (LTFS EE). The scripts are customized interface 
+scripts that perform recall instead of migration. 
 
 ------------------------
 
 Folder [quota-migration](/quota-migration) - Automated migration based on Quota 
 
-This folder contains a callback script and policies facilitating migration of a fileset to be triggered when the quota consumption reaches a certain threshold. The callback script (callback-quota.sh) is invoked when the GPFS event softQuotaExceeded is triggered. This script invokes a list policy to list files in the fileset that qualify for migration based on the quota limits and a migration policy that migrates the files identified by the list policy. 
+Purpose: This folder contains a callback script and policies facilitating migration of a fileset to be triggered when the quota consumption reaches a certain threshold. The callback script (callback-quota.sh) is invoked when the GPFS event softQuotaExceeded is triggered. This script invokes a list policy to list files in the fileset that qualify for migration based on the quota limits and a migration policy that migrates the files identified by the list policy. 
+
+------------------------
+
+Folder [premigrate](/premigrate) - Premigrate policies and scripts
+
+Purpose: This folder contains script and policies to perform premigrates using migrate 
+policies. It provides an interface script that wraps perform pre-migration instead of 
+migration. It contains an interface script for Spectrum Archive (LTFS EE). TSM HSM will be 
+added later. 
+
