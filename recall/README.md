@@ -1,4 +1,4 @@
-# Recall policy
+# Recall policy with TSM HSM
 
 ## Description
 The policy engine can be used to recall large numbers of files from an external pool, e.g. from tape. The policy file provided with this project can act as a template for performing such bulk recalls.
