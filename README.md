@@ -1,6 +1,6 @@
 This project includes scripts for the Spectrum Scale Policy Engine:
 
-Script Name: runpolicy.sh
+## Script Name: runpolicy.sh
 
 Purpose: runpolicy is a wrapper for mmapplypolicy that runs a policy provided as
 input file for a file system or directory provided as input. It also passes
