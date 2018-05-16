@@ -48,16 +48,17 @@ Defaults are defined in the runpolicy.sh file on top:
 ### Notes:
 In the policy you may have to adjust the GPFS file system pool in the FROM POOL statement, currently set to system.
 
-## Example Premigration policy based on size:
+## Example Premigration policy:
 
 Uses the THRESHOLD token with %high,%low,%premig whereby:
 
-HighPercentage
-    Indicates that the rule is to be applied only if the occupancy percentage of the current pool of the file is greater than or equal to the HighPercentage value. Specify a nonnegative integer in the range 0 to 100.
-LowPercentage
-    Indicates that MIGRATE and DELETE rules are to be applied until the occupancy percentage of the current pool of the file is reduced to less than or equal to the LowPercentage value. Specify a nonnegative integer in the range 0 to 100. The default is 0%.
-PremigratePercentage
-    Defines an occupancy percentage of a storage pool that is below the lower limit. Files that lie between the lower limit LowPercentage and the pre-migrate limit PremigratePercentage will be copied and become dual-resident in both the internal GPFS storage pool and the designated external storage pool. This option allows the system to free up space quickly by simply deleting pre-migrated files if the pool becomes full. Specify a nonnegative integer in the range 0 to LowPercentage. The default is the same value as LowPercentage.
+HighPercentage: Indicates that the rule is to be applied only if the occupancy percentage of the current pool of the file is greater than or equal to the HighPercentage value. Specify a nonnegative integer in the range 0 to 100.
+
+LowPercentage: Indicates that MIGRATE rules are to be applied until the occupancy percentage of the current pool of the file is reduced to less than or equal to the LowPercentage value. Specify a nonnegative integer in the range 0 to 100. The default is 0%.
+
+PremigratePercentage: Defines an occupancy percentage of a storage pool that is below the lower limit. Files that lie between the lower limit LowPercentage and the pre-migrate limit PremigratePercentage will be copied and become dual-resident in both the internal GPFS storage pool and the designated external storage pool. This option allows the system to free up space quickly by simply deleting pre-migrated files if the pool becomes full. Specify a nonnegative integer in the range 0 to LowPercentage. The default is the same value as LowPercentage.
+
+Here is an example of a premigration policy based that premigrates everything and migrates if the occupancy of the sysem pool is larger than 30 %: 
 
         /* premigrate all files from the given file sytem and directory */
         /* Define exclude list to exclude SpaceMan and snapshots */
@@ -78,3 +79,7 @@ PremigratePercentage
           AND NOT (exclude_list)
           )
         )
+
+Save this policy in a policy-file and run the policy for your file system (e.g. /ibm/gpfs) to migrate to pool mypool@lib0:
+
+        runpolicy run /ibm/gpfs policy-file "mypool@lib0"
