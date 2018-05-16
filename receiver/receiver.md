@@ -32,4 +32,4 @@ The program creates a subdirectory in the current directory called reciever and 
 ### Combination with runpolicy.sh
 You can also combine this with the runpolicy script. Then you do not have to run the long mmapplypolicy command:
 
-                  ./runpolicy run /mnt/userfs policy_mig_list
+            ./runpolicy run /mnt/userfs policy_mig_list
