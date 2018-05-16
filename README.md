@@ -1,6 +1,6 @@
 This project includes scripts for the Spectrum Scale Policy Engine:
 
-## Script Name: runpolicy.sh
+Folder [runpolicy](runpolicy/) - wrapper for mmapplypolicy
 
 Purpose: runpolicy is a wrapper for mmapplypolicy that runs a policy provided as
 input file for a file system or directory provided as input. It also passes
@@ -9,7 +9,7 @@ about its usage see runpolicy.readme.
 
 ------------------------
 
-Script Name: receiver.sh
+Folder [receiver](receiver/) - external script invoked by EXTERNAL LIST policy
 
 Purpose: List policies can be used to list files based on rules and give the
 list of files to an external pool script. The external pool script can then
