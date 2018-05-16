@@ -10,7 +10,7 @@ runpolicy is a wrapper for mmapplypolicy that runs a policy provided as input fi
                 pool:       name of the tape storage pool(s), multiple enclosed in quotes
 
 
-### Arguments passed to policy:
+### Arguments passed to policy engine:
 The parameters filesystem (given as input) and pools (given as input) are passed to the policy as parameters:
 FILESYSTEM and EEPOOL. 
 
@@ -35,7 +35,9 @@ The parameter FILESYSTEM is set to /ibm/gpfs and the parameter EEPOOL to mypool@
           AND NOT (exclude_list)
           )
         )
-        
+
+This policy will migrate files from the system pool of file system /ibm/gpfs to the mypool@lib0 which is larger than 1 MiB. 
+
 
 ### Defaults
 Defaults are defined in the runpolicy.sh file on top:
