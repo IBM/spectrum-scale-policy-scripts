@@ -1,6 +1,6 @@
 This project includes scripts for the Spectrum Scale Policy Engine:
 
-Folder [runpolicy](runpolicy/) - wrapper for mmapplypolicy
+## Folder [runpolicy](runpolicy/) - wrapper for mmapplypolicy
 
 Purpose: runpolicy is a wrapper for mmapplypolicy that runs a policy provided as
 input file for a file system or directory provided as input. It also passes
@@ -9,7 +9,7 @@ about its usage see runpolicy.readme.
 
 ------------------------
 
-Folder [receiver](receiver/) - external script invoked by EXTERNAL LIST policy
+## Folder [receiver](receiver/) - external script invoked by EXTERNAL LIST policy
 
 Purpose: List policies can be used to list files based on rules and give the
 list of files to an external pool script. The external pool script can then
@@ -19,7 +19,7 @@ output file. Of course you can add other operations.
 
 ------------------------
 
-Folder [immutable](immutable/) - Set files to immutable
+## Folder [immutable](immutable/) - Set files to immutable
 
 Purpose: This script is an external pool script that receives the input from a
 list policy and sets all files identified by the LIST policy to immutable using
@@ -29,7 +29,7 @@ plus retention period
 
 ------------------------
 
-Folder [list](list/) - List policy script
+## Folder [list](list/) - List policy script
 
 Purpose: This script is a wrapper to run custom LIST policies. The list
 policy files are installed in the same path as the script list.sh. The list
@@ -40,7 +40,7 @@ STDOUT.
 
 ------------------------
 
-Folder [Recall](recall/)
+## Folder [Recall](recall/)
 
 Purpose: This folder contains script and policies to drive tape optimized recalls
 with TSM HSM or Spectrum Archive (LTFS EE). The scripts are customized interface 
@@ -48,13 +48,13 @@ scripts that perform recall instead of migration.
 
 ------------------------
 
-Folder [quota-migration](/quota-migration) - Automated migration based on Quota 
+## Folder [quota-migration](/quota-migration) - Automated migration based on Quota 
 
 Purpose: This folder contains a callback script and policies facilitating migration of a fileset to be triggered when the quota consumption reaches a certain threshold. The callback script (callback-quota.sh) is invoked when the GPFS event softQuotaExceeded is triggered. This script invokes a list policy to list files in the fileset that qualify for migration based on the quota limits and a migration policy that migrates the files identified by the list policy. 
 
 ------------------------
 
-Folder [premigrate](/premigrate) - Premigrate policies and scripts
+## Folder [premigrate](/premigrate) - Premigrate policies and scripts
 
 Purpose: This folder contains script and policies to perform premigrates using migrate 
 policies. It provides an interface script that wraps perform pre-migration instead of 
