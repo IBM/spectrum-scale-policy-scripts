@@ -10,12 +10,14 @@ I have create a script which receives the input from a list policy and prints al
 1. copy the program to a directory of a node on your GPFS cluster and make it executable.
 
 2. create a list policy file as file such as the following which identifies migrated files.
+
             /* list all files that are migrated*/
             define(  exclude_list, (PATH_NAME LIKE '%/.SpaceMan/%' OR PATH_NAME LIKE '%/.ctdb/%' OR NAME LIKE 'user.quota%' OR NAME LIKE 'fileset.quota%' OR NAME LIKE group.quota%') )
             RULE EXTERNAL LIST 'mig-list' EXEC './receiver.sh' 
             RULE 'list_mig' LIST 'mig-list' WHERE (MISC_ATTRIBUTES LIKE '%M%' AND KB_ALLOCATED == 0)
 
 3. Run mmapplypolicy from the directory where the program is located.
+
             mmapplypolicy <gpfs-filesystem-dir> -m 1 -N <nodename> -n1 --single-instance -P <policy-file>
 
 ### Notes:
