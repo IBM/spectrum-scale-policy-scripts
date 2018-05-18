@@ -16,9 +16,11 @@ I have create a script which receives the input from a list policy and prints al
             RULE EXTERNAL LIST 'mig-list' EXEC './receiver.sh' 
             RULE 'list_mig' LIST 'mig-list' WHERE (MISC_ATTRIBUTES LIKE '%M%' AND KB_ALLOCATED == 0)
 
-3. Run mmapplypolicy from the directory where the program is located.
+3. Run mmapplypolicy from the directory where the program is located.  
 
             mmapplypolicy <gpfs-filesystem-dir> -m 1 -N <nodename> -n1 --single-instance -P <policy-file>
+
+With the parameter -m 1 you control the number of processes (instances of the script) that are launched in parallel (one in this example). With the parameter -N <nodename> you control on which nodes the script runs. So you can potentially distribute the execution of the file list processing across multiple nodes. 
 
 ### Notes:
 -m 1: only one thread
