@@ -1,3 +1,6 @@
+
+Copyright 2019 Nils Haustein, released under the [MIT license](LICENCE)
+
 This project includes scripts for the Spectrum Scale Policy Engine:
 
 ## Folder [immutable](immutable/) - Set files to immutable
