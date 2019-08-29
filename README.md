@@ -1,5 +1,5 @@
 
-Copyright 2019 Nils Haustein, released under the [MIT license](LICENCE)
+Copyright 2019 Nils Haustein, released under the [MIT license](LICENSE)
 
 This project includes scripts for the Spectrum Scale Policy Engine:
 
