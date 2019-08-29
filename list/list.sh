@@ -1,4 +1,27 @@
 #! /bin/bash
+################################################################################
+# The MIT License (MIT)                                                        #
+#                                                                              #
+# Copyright (c) 2019 Nils Haustein                             				   #
+#                                                                              #
+# Permission is hereby granted, free of charge, to any person obtaining a copy #
+# of this software and associated documentation files (the "Software"), to deal#
+# in the Software without restriction, including without limitation the rights #
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell    #
+# copies of the Software, and to permit persons to whom the Software is        #
+# furnished to do so, subject to the following conditions:                     #
+#                                                                              #
+# The above copyright notice and this permission notice shall be included in   #
+# all copies or substantial portions of the Software.                          #
+#                                                                              #
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR   #
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,     #
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE  #
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER       #
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,#
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE#
+# SOFTWARE.                                                                    #
+################################################################################
 
 #
 # flexible framework to run list policies
@@ -26,27 +49,24 @@ numbersOnly=1
 
 
 #function syntax
-function syntax
+function syntax 
 {
-  echo
+  echo 
   echo "Syntax: list state filesystem [-v -s workDir]"
   echo "This program lists the files according to the HSM state, Valid states are:"
   echo "  mig:        list all migrated files"
   echo "  pmig:       list all premigrated files"
   echo "  res:        list all resident files"
   echo "  all:        provides statistic about all states"
-  echo
+  echo 
   echo "  Filesystem: is the name of the file system or directory"
   echo "  -v:         shows the file names selected by the policy (default is number of files)"
   echo "  -s workDir: specify the working directory for the policy engine output files (default is $workDir)"
-  echo
+  echo 
 }
 
-#set number format
-export LC_NUMERIC="en_US.UTF-8"
-
 #check first argument to be state
-if [[ -z "$1" ]];
+if [[ -z "$1" ]]; 
 then
   echo "Error: state not specified."
   syntax
@@ -56,7 +76,7 @@ else
 fi
 
 # second argument must be file system path
-if [[ -z "$2" ]];
+if [[ -z "$2" ]]; 
 then
   echo "Error: file system not specified"
   syntax
@@ -82,7 +102,7 @@ do
   "-s") shift 1
         workDir=$1
 		if [[ ! -d "$workDir" ]];
-		then
+		then 
 		   echo "Error: working directory specified by -s $workDir does not exist."
 		   syntax
 		   exit 1
@@ -125,7 +145,7 @@ done
 mmapplypolicy $fsName -P $polfile -s $workDir -f $ofPrefix -I defer > $logfile
 rc=$?
 echo "=============================================================================="
-if (( rc == 0 ));
+if (( rc == 0 )); 
 then
   echo "Files that are in state $op:"
   if [[ "$op" = "all" ]];
@@ -133,34 +153,41 @@ then
      for s in mig pmig res;
 	 do
 	    outfile="$ofPrefix"".""list"".""$s"
-		if [[ ! -a "$outfile" ]];
+		if [[ ! -a "$outfile" ]]; 
 		then
 		  num=0
-		  size=0
 		else
-		  num=$(wc -l $outfile | awk '{print $1}')
-		  size=$(awk '{sum += $4/(1024^3)} END {print sum}' $outfile)
+		   num=$(wc -l $outfile | awk '{print $1}')
 		fi
-		printf "  Number of files with state $s:  %7s  %.2f GB  (filename: $outfile)\n" $num $size
+		echo "  Number of files with state $s:  $num  (filename: $outfile)"
 	 done
   else
     #create name of policy output file
     outfile="$ofPrefix"".""list"".""$op"
     # echo "DEBUG: out file name is: $outfile"
 	if (( numbersOnly ));
-	then
-	  num=$(wc -l $outfile | awk '{print $1}')
-	  size=$(awk '{sum += $4/(1024^3)} END {print sum}' $outfile)
-	  printf "  Number of files with state $op:  %7s  %.2f GB  (filename: $outfile)\n" $num $size
+	then 
+	  if [[ ! -a "$outfile" ]]; 
+	  then
+		num=0
+	  else
+	    num=$(wc -l $outfile | awk '{print $1}')
+	  fi
+	  echo "  Number of files with state $op:  $num  (filename: $outfile)"
 	else
-      cat $outfile
-	  echo "---------------------------------------------------------------------------"
-	  echo "INFO: See file $outfile"
-	  echo "---------------------------------------------------------------------------"
+	  if [[ ! -a "$outfile" ]]; 
+	  then
+		echo "WARNING: The policy did not identify any files according to the policy.!"
+	  else
+        cat $outfile
+	    echo "---------------------------------------------------------------------------"
+	    echo "INFO: See file $outfile"
+	    echo "---------------------------------------------------------------------------"
+	  fi
 	fi
   fi
 else
   echo "ERROR: mmapplypolicy returned error (rc=$rc), check log ($logfile)"
 fi
 
-exit 0
+exit 0 
