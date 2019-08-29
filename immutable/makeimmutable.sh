@@ -1,13 +1,47 @@
 #! /bin/ksh
-#
-# Copy Right IBM Corporation 2015
-#
+################################################################################
+# The MIT License (MIT)                                                        #
+#                                                                              #
+# Copyright (c) 2019 Nils Haustein                             				   #
+#                                                                              #
+# Permission is hereby granted, free of charge, to any person obtaining a copy #
+# of this software and associated documentation files (the "Software"), to deal#
+# in the Software without restriction, including without limitation the rights #
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell    #
+# copies of the Software, and to permit persons to whom the Software is        #
+# furnished to do so, subject to the following conditions:                     #
+#                                                                              #
+# The above copyright notice and this permission notice shall be included in   #
+# all copies or substantial portions of the Software.                          #
+#                                                                              #
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR   #
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,     #
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE  #
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER       #
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,#
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE#
+# SOFTWARE.                                                                    #
+################################################################################
+
 # Program: makeimmutable
 #
 # Description: 
 # Interface script for LIST policy invoked by mmapplypolicy 
 # Sets selected files to immutable with retention time given in policy.
-
+#
+# Prerequisite:
+# EXTERNAL list policy that identifies files that are not immutable.
+#
+# Input:
+# invoked by mmapplypolicy with the following parameters:
+# $1 operation (list, test)
+# $2 file system name or name of filelist
+# $3 optional parameter defined in LIST policy under OPTS, defines retention period in days relative to current date
+#
+# Output:
+# Sets files identified to immutable with retention period define in policy (default is defined as $DEFRETTIME
+# Write runtime information and debugging messages to log file $LOGFILE
+#
 # Example Policy:
 # /* define macros */
 # define( exclude_list, (PATH_NAME LIKE '%/.SpaceMan/%' OR PATH_NAME LIKE '%/.snapshots/%' OR NAME LIKE '%mmbackup%' ))
@@ -20,6 +54,7 @@
 # mmapplypolicy fsname -P policyfile
 #
 # Change History
+# 10/09/12 first implementation based GAD startbackup
 # 12/20/15 implementation for immutability, some streamlining of existing code
 
 #global variables for this script
