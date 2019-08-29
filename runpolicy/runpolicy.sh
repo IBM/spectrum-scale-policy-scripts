@@ -1,4 +1,27 @@
 #!/bin/bash
+################################################################################
+# The MIT License (MIT)                                                        #
+#                                                                              #
+# Copyright (c) 2019 Nils Haustein                             				   #
+#                                                                              #
+# Permission is hereby granted, free of charge, to any person obtaining a copy #
+# of this software and associated documentation files (the "Software"), to deal#
+# in the Software without restriction, including without limitation the rights #
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell    #
+# copies of the Software, and to permit persons to whom the Software is        #
+# furnished to do so, subject to the following conditions:                     #
+#                                                                              #
+# The above copyright notice and this permission notice shall be included in   #
+# all copies or substantial portions of the Software.                          #
+#                                                                              #
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR   #
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,     #
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE  #
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER       #
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,#
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE#
+# SOFTWARE.                                                                    #
+################################################################################
 # 
 #  Program name: runpolicy
 # Description: run a policy to a given file system with a given policy file
@@ -6,9 +29,9 @@
 #
 
 LOGLEVEL=1
-MMAPPLYPOLICY_OPTS="-m 3 -N all -n 1 --single-instance"
-DEFAULT_FSDIR="/mnt/userfs/"
-DEFAULT_PFILE="./policyfile"
+MMAPPLYPOLICY_OPTS="-m 3 -n 1 --single-instance"
+DEFAULT_FSDIR="/mnt/hsmdiv/"
+DEFAULT_PFILE="./policyfile_all_hsm.txt"
 DEFAULT_EEPOOL="mpool"
 mode=$1
 fs=$2
@@ -25,7 +48,7 @@ syntax ()
    echo "        policyfile: name of the file including the policy"
    echo "                    (default: $DEFAULT_PFILE"
    echo "        pool:       name of the tape storage pool(s), multiple enclosed in quotes"
-   echo "                    (default: $DEFAULT_EEPOOL)"
+   echo "                    Can be omitted with TSM HSM. (default: $DEFAULT_EEPOOL)"
    echo 
    exit 1
 }
@@ -74,4 +97,3 @@ fi
 
 echo "INFO: $(date +"%d/%m/%y %H:%M:%S") Finishing policy on $hostname"
 exit $rc
-
