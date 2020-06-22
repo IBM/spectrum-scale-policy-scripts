@@ -2,7 +2,7 @@
 ################################################################################
 # The MIT License (MIT)                                                        #
 #                                                                              #
-# Copyright (c) 2019 Nils Haustein                             				   #
+# Copyright (c) 2020 Nils Haustein                             				   #
 #                                                                              #
 # Permission is hereby granted, free of charge, to any person obtaining a copy #
 # of this software and associated documentation files (the "Software"), to deal#
@@ -23,49 +23,73 @@
 # SOFTWARE.                                                                    #
 ################################################################################
 
-# Program: makeimmutable
+# Program: makeimmutable.sh
 #
 # Description: 
+#-------------
 # Interface script for LIST policy invoked by mmapplypolicy 
 # Sets selected files to immutable with retention time given in policy.
 #
 # Prerequisite:
+#-------------
 # EXTERNAL list policy that identifies files that are not immutable.
 #
 # Input:
+#-------
 # invoked by mmapplypolicy with the following parameters:
 # $1 operation (list, test)
 # $2 file system name or name of filelist
 # $3 optional parameter defined in LIST policy under OPTS, defines retention period in days relative to current date
 #
 # Output:
+#--------
 # Sets files identified to immutable with retention period define in policy (default is defined as $DEFRETTIME
 # Write runtime information and debugging messages to log file $LOGFILE
 #
 # Example Policy:
-# /* define macros */
-# define( exclude_list, (PATH_NAME LIKE '%/.SpaceMan/%' OR PATH_NAME LIKE '%/.snapshots/%' OR NAME LIKE '%mmbackup%' ))
-# define( immutable, MISC_ATTRIBUTES LIKE '%X%')
-# /* define external script and 1 day retention for all files
-# RULE EXTERNAL LIST 'setmp3' EXEC '/root/silo/makeimmutable.sh' OPTS '1'
-# RULE 'mp3' LIST 'setmp3' FOR FILESET ('native') WHERE NOT (exclude_list) and NOT (immutable) and (NAME LIKE '%.mp3')
+#-----------------
+#/* define exclude list */
+#define(  exclude_list,
+#  (PATH_NAME LIKE '%/.SpaceMan/%' OR
+#   PATH_NAME LIKE '%/.ltfsee/%' OR
+#   PATH_NAME LIKE '%/.mmSharedTmpDir/%' OR
+#   PATH_NAME LIKE '%/.snapshots/%' OR
+#   NAME LIKE '.mmbackupShadow%' OR
+#   NAME LIKE 'mmbackup%')
+#/* define immutable attribute */
+#define( immutable, MISC_ATTRIBUTES LIKE '%X%')
+#/* define external list with makeimmutable.sh script to set mp3 files in fileset 'worm' to immutable with 1 day retention */
+#RULE EXTERNAL LIST 'setmp3' EXEC '/root/silo/makeimmutable.sh' OPTS '1'
+#RULE 'mp3' LIST 'setmp3' FOR FILESET ('worm') WHERE NOT (exclude_list) and NOT (immutable) and (NAME LIKE '%.mp3')
 #
 # Invokation:
-# mmapplypolicy fsname -P policyfile
+#-------------
+# mmapplypolicy fsname -P policyfile [-N nodenames -m threads -B bucketsize]
+#    Policy file must include a policy as shown above.
 #
 # Change History
-# 10/09/12 first implementation based GAD startbackup
+#----------------
+# 10/09/12 first implementation based on startbackup
 # 12/20/15 implementation for immutability, some streamlining of existing code
+# 06/22/20 minor adjustments
 
-#global variables for this script
-#paths definitions
+#----------------------------------
+#These parameters can be adjusted
+#-----------------------------------
+# define the path for the log file
 MYPATH="./makeimmutable/"
-# logfile used for system_log function
+# logfile used for system_log function, logs are appended
 LOGFILE=$MYPATH"makeimmutable.log"
 # sets the log level for the system log, everything below that number is logged
 LOGLEVEL=1
 # default retention time
 DEFRETTIME=0
+
+#----------------------------------
+# Constants
+#----------------------------------
+# GPFS path name to be used with all GPFS commands
+gpfsPath="/usr/lpp/mmfs/bin/mmlsfs"
 
 
 ## Append to the system log
@@ -169,10 +193,10 @@ case $op in
 		   system_log 1 "WARNING: file $fName does not exist."
 		   user_log "DEBUG: file $fName does not exist."
 		 else 
-           mmchattr -E $(date +%Y-%m-%d@%H:%M:%S -d "$DATE + $retTime day") "$fName"
+           $gpfsPath/mmchattr -E $(date +%Y-%m-%d@%H:%M:%S -d "$DATE + $retTime day") "$fName"
            rc=$?
            if (( rc == 0 )) then
-              mmchattr -i yes "$fName"
+              $gpfsPath/mmchattr -i yes "$fName"
 		     (( rc=rc+$? ))
            fi
 		   if (( rc == 0 )) then
