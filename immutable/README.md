@@ -87,9 +87,13 @@ Write runtime information and debugging messages to log file specified with the 
 
 ## Supplemental List Policy
 
-It may be worth to periodically check if all files have been set to immutable. The supplemental list policy [list-immutable.txt](list-immutable.txt) can be used for this.
+It may be worth to periodically check if all files have been set to immutable. The supplemental list policy [list-immutable.txt](list-immutable.txt) can be used for this. This policy will list any files in fileset `worm` which are not immutable. To list only files of a certain type a WHERE clause can be added to the LIST rule, like this:
+ 
+	... WHERE NOT (exclude_list) and NOT (immutable) and (NAME LIKE '%.mp3')
+
 
 To run this policy use the `mmapplypolicy` command:
 	mmapplypolicy fsname -P policy -f ./my -I defer
+
 
 The resulting file list is stored in file `my.list.immut`
