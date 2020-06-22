@@ -1,0 +1,20 @@
+/* define exclude list */
+define(  exclude_list,
+  (PATH_NAME LIKE '%/.SpaceMan/%' OR
+   PATH_NAME LIKE '%/.ltfsee/%' OR
+   PATH_NAME LIKE '%/.mmSharedTmpDir/%' OR
+   PATH_NAME LIKE '%/.snapshots/%' OR
+   NAME LIKE '.mmbackupShadow%' OR
+   NAME LIKE 'mmbackup%')
+   
+/* define immutable attribute */
+define( immutable, MISC_ATTRIBUTES LIKE '%X%')
+
+/* define external list with makeimmutable.sh script to set mp3 files in fileset 'worm' to immutable with 1 day retention */
+RULE EXTERNAL LIST 'setmp3' EXEC '/root/silo/makeimmutable.sh' OPTS '1'
+RULE 'mp3' LIST 'setmp3' FOR FILESET ('worm') WHERE NOT (exclude_list) and NOT (immutable) and (NAME LIKE '%.mp3')
+
+/* define external list with makeimmutable.sh script to set pdf files in fileset 'worm' to immutable with 1 day retention */
+RULE EXTERNAL LIST 'setpdf' EXEC '/root/silo/makeimmutable.sh' OPTS '2'
+RULE 'pdf' LIST 'setpdf' FOR FILESET ('worm') WHERE NOT (exclude_list) and NOT (immutable) and (NAME LIKE '%.pdf')
+
