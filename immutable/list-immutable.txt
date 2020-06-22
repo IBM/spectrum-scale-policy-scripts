@@ -1,0 +1,18 @@
+/* define exclude list */
+define(  exclude_list,
+  (PATH_NAME LIKE '%/.SpaceMan/%' OR
+   PATH_NAME LIKE '%/.ltfsee/%' OR
+   PATH_NAME LIKE '%/.mmSharedTmpDir/%' OR
+   PATH_NAME LIKE '%/.snapshots/%' OR
+   NAME LIKE '.mmbackupShadow%' OR
+   NAME LIKE 'mmbackup%')
+
+/* define immutable attribute */
+define( immutable, MISC_ATTRIBUTES LIKE '%X%')
+
+/* external list rule */
+RULE EXTERNAL LIST 'immut' EXEC '' 
+RULE 'listimmut' LIST 'immut' FOR FILESET ('worm') WHERE NOT (exclude_list) and NOT (immutable)
+
+/* to run this policy: mmapplypolicy fsname -P policy -f ./gpfs -I defer */
+/* result is written to ./gpfs.list.immut */
