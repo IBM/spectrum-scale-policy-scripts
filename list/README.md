@@ -2,7 +2,7 @@
 
 ## Description:
 
-This is a wrapper script to run predefined and custom LIST policies. LIST policies can be used to find files matching certain criteria, such as file that are migrated or files that are premigrated. There are some predefined LIST policies included (see section [Running predefined LIST policies](## Running predefined LIST policies)). Further custom LIST policies can be created and run by this wrapper script (see section [Running custom LIST policies](## Running custom LIST policies)).
+This is a wrapper script to run predefined and custom LIST policies. LIST policies can be used to find files matching certain criteria, such as file that are migrated or files that are premigrated. There are some predefined LIST policies included (see section [Running predefined LIST policies](#Running-predefined-LIST-policies)). Further custom LIST policies can be created and run by this wrapper script (see section [Running custom LIST policies](#Running-custom-LIST-policies)).
 
 
 ## Running predefined LIST policies
