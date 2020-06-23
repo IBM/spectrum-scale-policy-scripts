@@ -5,6 +5,7 @@
 This is a wrapper script to run predefined and custom LIST policies. LIST policies can be used to find files matching certain criteria, such as file that are migrated or files that are premigrated. There are some predefined LIST policies included (see section [Running predefined LIST policies](#Running-predefined-LIST-policies)). Further custom LIST policies can be created and run by this wrapper script (see section [Running custom LIST policies](#Running-custom-LIST-policies)).
 
 
+
 ## Running predefined LIST policies
 
 The wrapper script `list.sh` lists the number of files according to the state given as command line parameter. Optionally the file names can be listed (option `-v`)
@@ -13,13 +14,13 @@ For installation, copy the wrapper script `list.sh` along with the predefined po
 
 The syntax is:
 
-	list.sh state fspath [-v -s]
+	# ist.sh state fspath [-v -s]
 	
 	Options:
 	state		is the name of the policy to be executed according to the above naming conventions
     fspath		is the file system or directory path subject for the list policy
-	-v			list the file names instead of the number of files
-	-s 			specify the local work directory for the policy engine (default is /tmp)
+	-v		list the file names instead of the number of files
+	-s 		specify the local work directory for the policy engine (default is /tmp)
 	
 	Predefined states are:
 	mig		list all migrated files
@@ -33,8 +34,7 @@ The output of the policy run is written to STDOUT.
 
 For example, to list the number of in file system /gpfs/archive that are migrated use the following command:
 
-	list.sh mig /gpfs/archive
-	
+	# list.sh mig /gpfs/archive
 	[I] 2020-06-23@16:55:05.206 Directory entries scanned: 838.
 	[I] 2020-06-23@16:55:06.106 Parallel-piped sort and policy evaluation. 838 files scanned.
 	[I] 2020-06-23@16:55:06.399 Piped sorting and candidate file choosing. 141 records scanned.
@@ -77,7 +77,7 @@ The wrapper script `list.sh` can also be used to run your own custom policies. T
 
 To run this policy with the `list.sh` script, copy the policy file to the directory where `list.sh` is located or alternatively to the location specified by parameter `$pfPrefix` within the `list.sh`script. Now run the script:
 
-	list.sh immut /gpfs/archive
+	# list.sh immut /gpfs/archive
 
 
 This display list the number of immutable files in the file system `gpfs/archive`. The file list with the file names is stored in `/tmp/gpfs.list.immut` (until the program is executed again with the same state operation).
