@@ -1,0 +1,25 @@
+/* Use external script to premigrate all resident files to LTFS */
+
+/* define exclude rule*/
+RULE 'exclude' EXCLUDE WHERE 
+  (PATH_NAME LIKE '%/.SpaceMan/%' OR 		
+   PATH_NAME LIKE '%/.ltfsee/%' OR 			
+   PATH_NAME LIKE '%/.mmSharedTmpDir/%' OR	
+   PATH_NAME LIKE '%/.snapshots/%' OR 		
+   NAME LIKE '.mmbackupShadow%' OR 			
+   NAME LIKE 'mmbackup%')
+
+
+/* define macros */
+define( is_resident,(MISC_ATTRIBUTES NOT LIKE '%M%') )
+define( is_empty,(KB_ALLOCATED=0) )
+
+/* Define external pool ltfsPremig with customized interface script that does premigrate instead of migrated*/
+RULE EXTERNAL POOL 'ltfsPremig'
+EXEC '/root/silo/premig/ltfsee_premig.sh' /* full path to ltfsee command must be specified */
+OPTS '-p test@eelib1' /* this is our pool in EE which is given by the runpolicy script*/
+
+/* (Pre)Migrate everything from system to ltfsPremig for fileset test that is resident and no 0 bytes*/
+RULE 'PMigToExt' MIGRATE FROM POOL 'system' TO POOL 'ltfsPremig' FOR FILESET ('test') 
+WHERE ( (is_resident) AND NOT (is_empty) )
+
