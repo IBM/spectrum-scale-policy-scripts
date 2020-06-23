@@ -89,7 +89,7 @@ DEFRETTIME=0
 # Constants
 #----------------------------------
 # GPFS path name to be used with all GPFS commands
-gpfsPath="/usr/lpp/mmfs/bin/mmlsfs"
+gpfsPath="/usr/lpp/mmfs/bin"
 
 
 ## Append to the system log
