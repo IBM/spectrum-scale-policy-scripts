@@ -24,12 +24,12 @@ The premigration script `ltfsee_premig.sh` is invoked with the policy engine:
 	
 	Options:
 		fsname			is the file system name, file system path or the file system path with a subdirectory. 
-		-P policyfile		is the policy file including the EXTERNAL POOL rule specifying the `ltfsee_premig.sh` interface script and the MIGRATE rule. Here is an [example](premig_fset_all.txt)
+		-P policyfile		is the policy file including the EXTERNAL POOL rule specifying the `ltfsee_premig.sh` interface script and the MIGRATE rule. 
 		-N nodenames		node name or node class name that executes this policy. Must be Spectrum Archive EE nodes
 		--single-instance	run only one instance of this policy. 
 
 
-Further options can be specified with the `mmapplypolicy` command. 	
+An example for the `policyfile` in file [premig_fset_all.txt](premig_fset_all.txt). Further options can be specified with the `mmapplypolicy` command. 	
 
 
 ## Processing 
