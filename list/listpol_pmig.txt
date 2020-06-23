@@ -1,9 +1,16 @@
 /* Define exclude list to exclude SpaceMan and snapshots */
-define( exclude_list,(PATH_NAME LIKE '%/.SpaceMan/%' OR PATH_NAME LIKE '%/.snapshots/%') )
+define(  exclude_list,
+  (PATH_NAME LIKE '%/.SpaceMan/%' OR 		
+   PATH_NAME LIKE '%/.ltfsee/%' OR 			
+   PATH_NAME LIKE '%/.mmSharedTmpDir/%' OR	
+   PATH_NAME LIKE '%/.snapshots/%' OR 		
+   NAME LIKE '.mmbackupShadow%' OR 			
+   NAME LIKE 'mmbackup%')					
+) 
 
 /* Define is premigrated */
 define( is_premigrated,(MISC_ATTRIBUTES LIKE '%M%' AND MISC_ATTRIBUTES NOT LIKE '%V%') )
 
 /* list rule to list all premigrated files */
 RULE EXTERNAL LIST 'pmig' EXEC ''
-RULE 'list_pmig' LIST 'pmig' SHOW ( varchar(file_size) ) WHERE ( is_premigrated )  AND ( NOT (exclude_list) )
+RULE 'list_pmig' LIST 'pmig' WHERE ( is_premigrated )  AND ( NOT (exclude_list) )

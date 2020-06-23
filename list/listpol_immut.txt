@@ -8,9 +8,9 @@ define(  exclude_list,
    NAME LIKE 'mmbackup%')					
 ) 
 
-/* Define is resident */
-define( is_resident,(MISC_ATTRIBUTES NOT LIKE '%M%') )
+/* find immutable files */
+define(is_immutable,(MISC_ATTRIBUTES LIKE '%X%'))
 
-/* list rule to list all resident files */
-RULE EXTERNAL LIST 'res' EXEC ''
-RULE 'list_res' LIST 'res' WHERE ( is_resident )  AND ( NOT (exclude_list) )
+RULE EXTERNAL LIST 'immut' EXEC ''
+RULE 'immutable_files' LIST 'immut' WHERE (is_immutable) AND ( NOT (exclude_list) )
+

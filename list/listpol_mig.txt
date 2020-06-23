@@ -1,9 +1,16 @@
 /* Define exclude list to exclude SpaceMan and snapshots */
-define( exclude_list,(PATH_NAME LIKE '%/.SpaceMan/%' OR PATH_NAME LIKE '%/.snapshots/%') )
+define(  exclude_list,
+  (PATH_NAME LIKE '%/.SpaceMan/%' OR 		
+   PATH_NAME LIKE '%/.ltfsee/%' OR 			
+   PATH_NAME LIKE '%/.mmSharedTmpDir/%' OR	
+   PATH_NAME LIKE '%/.snapshots/%' OR 		
+   NAME LIKE '.mmbackupShadow%' OR 			
+   NAME LIKE 'mmbackup%')					
+) 
 
 /* Define is migrated */
 define( is_migrated,(MISC_ATTRIBUTES LIKE '%V%') )
 
 /* list rule to list all migrated files */
 RULE EXTERNAL LIST 'mig' EXEC ''
-RULE 'list_mig' LIST 'mig' SHOW ( varchar(file_size) ) WHERE ( is_migrated )  AND ( NOT (exclude_list) )
+RULE 'list_mig' LIST 'mig' WHERE ( is_migrated )  AND ( NOT (exclude_list) )
