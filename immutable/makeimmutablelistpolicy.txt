@@ -6,7 +6,8 @@ define(  exclude_list,
    PATH_NAME LIKE '%/.snapshots/%' OR
    NAME LIKE '.mmbackupShadow%' OR
    NAME LIKE 'mmbackup%')
-   
+)
+
 /* define immutable attribute */
 define( immutable, MISC_ATTRIBUTES LIKE '%X%')
 
