@@ -1,102 +1,73 @@
 # List policy script
 
 ## Description:
-This script is a wrapper to run custom LIST policies. The list policy files are installed in the same path as the script `list.sh`. The list policy files have a specific naming convention with the "operation code" in the file name. The list policy script is invoked with the "operation code" that executes the underlying policy file and prints the selected files to STDOUT.
 
-## Prerequisite:
-1. Create a custom list policy where the EXTERNAL LIST RULE name is identical to a operation code. See examples below.
-2. Store this list policy in a file with the operation code within the file name: `listpol_<op-code>.txt`
-3. Store the file in the same directory as the script. Alternatively change the variable `$pfPrefix` in the script to reflect the correct path.
+This is a wrapper script to run predefined and custom LIST policies. LIST policies can be used to find files matching certain criteria, such as file that are migrated or files that are premigrated. There are some predefined LIST policies included (see section [Running predefined LIST policies](## Running predefined LIST policies)). Further custom LIST policies can be created and run by this wrapper script (see section [Running custom LIST policies](## Running custom LIST policies)).
 
-## Invocation:
-```
-list.sh <op-code> <fspath>
-```
 
-- *op-code* is the name of the policy to be executed according to the above naming conventions
-- *fspath* is the file system or directory path subject for the list policy
+## Running predefined LIST policies
 
-## Processing:
-The script checks if the list policy file exists, executes the LIST policy using `mmapplypolicy` and lists the files matching the rule. The output files are written to `/tmp/gpfs.list.<op-code>` and stored there until the next run.
+The wrapper script `list.sh` lists the number of files according to the state given as command line parameter. Optionally the file names can be listed (option `-v`)
 
-Note that the directory of the output files can be changed in the script by the variable `$ofPrefix`.
+For installation, copy the wrapper script `list.sh` along with the predefined policy file examples named `listpol_*.txt` to the same directory. 
 
-## Output:
-File identified by the policy engine are listed on STDOUT according to the policy engine format.
-Output files including these files are stored in `/tmp/gpfs.list.<op-code>`
+The syntax is:
 
-## Examples:
+	list.sh state fspath [-v -s]
+	
+	*state* is the name of the policy to be executed according to the above naming conventions
+    *fspath* is the file system or directory path subject for the list policy
+	*-v*: list the file names instead of the number of files
+	*-s*: specify the local work directory for the policy engine (default is /tmp)
+	
+	Predefined file states are:
+	*mig*: list all migrated files
+	*pmig*: list all premigrated files
+	*res*: list all resident files 
+	*all*: list all premigrated 
+	
+The script checks if the list policy file exists, executes the approporate LIST policy using `mmapplypolicy` and prints the number of files matching the state. The actual path and file names matching the LIST rule are written to `/tmp/gpfs.list.<state>`. The directory of the output files can be changed in the script by the parameter `$ofPrefix`.
 
-### LIST policy to identify all migrated files, copy and paste this to file listpol_mig.txt
+The output of the policy run is written to STDOUT.
 
-```
-/* Define exclude list to exclude SpaceMan and snapshots */
-define( exclude_list,(PATH_NAME LIKE '%/.SpaceMan/%' OR PATH_NAME LIKE '%/.snapshots/%') )
-/* Define is migrated */
-define( is_migrated,(MISC_ATTRIBUTES LIKE '%V%') )
-/* list rule to list all migrated files */
-RULE EXTERNAL LIST 'mig' EXEC ''
-RULE 'list_mig' LIST 'mig' WHERE ( is_migrated )  AND ( NOT (exclude_list) )
-```
+For example, to list the number of in file system /gpfs/archive that are migrated use the following command:
 
-Execution: `list.sh mig /<fspath>`
+	list.sh mig /gpfs/archive 
 
-Output file name: `/tmp/gpfs.list.mig`
+The file list with the file names is stored in `/tmp/gpfs.list.mig` (until the program is executed again with the same state operation).
 
-### LIST policy to identify all premigrated files, copy and paste this to file listpol_pmig.txt
+You can also create your own list policies and run it by the wrapper script `list.sh`. 
 
-```
-/* Define exclude list to exclude SpaceMan and snapshots */
-define( exclude_list,(PATH_NAME LIKE '%/.SpaceMan/%' OR PATH_NAME LIKE '%/.snapshots/%') )
-/* Define is premigrated */
-define( is_premigrated,(MISC_ATTRIBUTES LIKE '%M%' AND MISC_ATTRIBUTES NOT LIKE '%V%') )
-/* list rule to list all premigrated files */
-RULE EXTERNAL LIST 'pmig' EXEC ''
-RULE 'list_pmig' LIST 'pmig' WHERE ( is_premigrated )  AND ( NOT (exclude_list) )
-```
 
-Execution: `list.sh pmig /<fspath>`
+## Running custom LIST policies
 
-Output file name: `/tmp/gpfs.list.pmig`
+The wrapper script `list.sh` can also be used to run your own custom policies. To create a custom policy two things must be considered:
 
-### LIST policy to identify all resident files, copy and paste this to file listpol_res.txt
+1. Create a custom list policy where the EXTERNAL LIST name defines the state of the files to be listed. For example, the following EXTERNAL LIST name is `immut`. The associated LIST rules lists immutable files:
 
-```
-/* Define exclude list to exclude SpaceMan and snapshots */
-define( exclude_list,(PATH_NAME LIKE '%/.SpaceMan/%' OR PATH_NAME LIKE '%/.snapshots/%') )
-/* Define is resident */
-define( is_resident,(MISC_ATTRIBUTES NOT LIKE '%M%') )
-/* list rule to list all resident files */
-RULE EXTERNAL LIST 'res' EXEC ''
-RULE 'list_res' LIST 'res' WHERE ( is_resident )  AND ( NOT (exclude_list) )
-```
+	/* Define exclude list to exclude SpaceMan and snapshots */
+	define(  exclude_list,
+	  (PATH_NAME LIKE '%/.SpaceMan/%' OR 		
+	   PATH_NAME LIKE '%/.ltfsee/%' OR 			
+	   PATH_NAME LIKE '%/.mmSharedTmpDir/%' OR	
+	   PATH_NAME LIKE '%/.snapshots/%' OR 		
+	   NAME LIKE '.mmbackupShadow%' OR 			
+	   NAME LIKE 'mmbackup%')					
+	) 
 
-Execution: `list.sh res /<fspath>`
+	/* find immutable files */
+	define(is_immutable,(MISC_ATTRIBUTES LIKE '%X%'))
 
-Output file name: `/tmp/gpfs.list.res`
+	RULE EXTERNAL LIST 'immut' EXEC ''
+	RULE 'immutable_files' LIST 'immut' WHERE (is_immutable) AND ( NOT (exclude_list) )
 
-### LIST policy to identify files in resident, migrated and premigrated state in a summary view, copy and paste this to file listpol_res.txt
 
-```
-/* Define exclude list to exclude SpaceMan and snapshots */
-define( exclude_list,(PATH_NAME LIKE '%/.SpaceMan/%' OR PATH_NAME LIKE '%/.snapshots/%') )
-/* Define is migrated */
-define( is_migrated,(MISC_ATTRIBUTES LIKE '%V%') )
-/* list rule to list all migrated files */
-RULE EXTERNAL LIST 'mig' EXEC ''
-RULE 'list_mig' LIST 'mig' WHERE ( is_migrated )  AND ( NOT (exclude_list) )
-/* Define is premigrated */
-define( is_premigrated,(MISC_ATTRIBUTES LIKE '%M%' AND MISC_ATTRIBUTES NOT LIKE '%V%') )
-/* list rule to list all premigrated files */
-RULE EXTERNAL LIST 'pmig' EXEC ''
-RULE 'list_pmig' LIST 'pmig' WHERE ( is_premigrated )  AND ( NOT (exclude_list) )
-/* Define is resident */
-define( is_resident,(MISC_ATTRIBUTES NOT LIKE '%M%') )
-/* list rule to list all resident files */
-RULE EXTERNAL LIST 'res' EXEC ''
-RULE 'list_res' LIST 'res' WHERE ( is_resident )  AND ( NOT (exclude_list) )
-```
+2. Store this policy in a file named: `listpol_immut.txt`. Thus, the name of the EXTERNAL LIST must match the file name pattern of the policy file. 
 
-Execution: `list.sh all /<fspath>`
 
-Output file names: `/tmp/gpfs.list.res`, `/tmp/gpfs.list.mig`, `/tmp/gpfs.list.pmig`
+To run this policy with the `list.sh` script, copy the policy file to the directory where `list.sh` is located or alternatively to the location specified by parameter `$pfPrefix` within the `list.sh`script. Now run the script:
+
+	list.sh immut /gpfs/archive
+
+
+This display list the number of immutable files in the file system `gpfs/archive`. The file list with the file names is stored in `/tmp/gpfs.list.immut` (until the program is executed again with the same state operation).
