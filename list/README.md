@@ -23,7 +23,7 @@ The syntax is:
 	
 	Predefined states are:
 	mig		list all migrated files
-	pmig	list all premigrated files
+	pmig		list all premigrated files
 	res		list all resident files 
 	all		list all premigrated 
 	
