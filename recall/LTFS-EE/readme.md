@@ -18,11 +18,11 @@ Adjust the recall policy according to your needs and store it in the same direct
 
 There are two policies provided:
 
-[recall_migOnly_policy.txt](recall_migOnly_policy.txt):
-This policy recalls all migrated files that match clause in the macro `recall_dir`. Only migrated files are recalled. To recall migrated files directly to resident state the option `--resident` has to be added to the EXTERNAL POOL rule in the clause: `OPTS '--resident'`. Note, you cannot recall pre-migrated files, unless you recall to resident state. 
+  [recall_migOnly_policy.txt](recall_migOnly_policy.txt):
+  This policy recalls all migrated files that match clause in the macro `recall_dir`. Only migrated files are recalled. To recall migrated files directly to resident state the option `--resident` has to be added to the EXTERNAL POOL rule in the clause: `OPTS '--resident'`. Note, you cannot recall pre-migrated files, unless you recall to resident state. 
 
-[recall_migPmig_policy.txt](recall_migPmig_policy.txt):
-This policy recalls all pre-migrated and migrated files to resident state that match clause in the macro `recall_dir`. 
+  [recall_migPmig_policy.txt](recall_migPmig_policy.txt):
+  This policy recalls all pre-migrated and migrated files to resident state that match clause in the macro `recall_dir`. 
  
 If the `ltfsee_recall.sh` script and the policies are stored in directory `/usr/local/bin` then the EXTERNAL POOL rule EXEC clause must be adjusted to:
 
