@@ -8,6 +8,7 @@ This script can be used as an interface script in combination with a migration p
 
 Please notice that IBM Spectrum Archive Enterprise Edition version 1.3.0.7 and above has built in capabilities to recall files from LTFS Tape to IBM Spectrum Scale disk. For more details see the IBM Spectrum Archive EE Knowledge Center - section [Manual-recall-with-the mmapplypolicy-command](https://www.ibm.com/support/knowledgecenter/en/ST9MBR_1.3.0/ltfs_ee_recall_mmapplypolicy.html). If you are using this version of IBM Spectrum Archive EE it is recommended to use the built in approach.
 
+The script `ltfsee_recall.sh` along with the policies has been last tested with IBM Spectrum Archive EE version 1.3.0.7.
 
 ## Prerequisite
 
@@ -17,10 +18,10 @@ Adjust the recall policy according to your needs and store it in the same direct
 
 There are two policies provided:
 
-[recall_migOnly.txt](recall_migOnly.txt):
+[recall_migOnly_policy.txt](recall_migOnly_policy.txt):
 This policy recalls all migrated files that match clause in the macro `recall_dir`. Only migrated files are recalled. To recall migrated files directly to resident state the option `--resident` has to be added to the EXTERNAL POOL rule in the clause: `OPTS '--resident'`. Note, you cannot recall pre-migrated files, unless you recall to resident state. 
 
-[recall_migPmig.txt](recall_migOnly.txt):
+[recall_migPmig_policy.txt](recall_migOnly_policy.txt):
 This policy recalls all pre-migrated and migrated files to resident state that match clause in the macro `recall_dir`. 
  
 If the `ltfsee_recall.sh` script and the policies are stored in directory `/usr/local/bin` then the EXTERNAL POOL rule EXEC clause must be adjusted to:
@@ -42,7 +43,7 @@ The recall script `ltfsee_recall.sh` is invoked with the policy engine:
 		--single-instance	run only one instance of this policy. 
 
 
-Two example for the `policyfile` are provided in [recall_migOnly.txt](recall_migOnly.txt) and [recall_migPmig.txt](recall_migOnly.txt). Further options can be specified with the `mmapplypolicy` command. 	
+Two example for the `policyfile` are provided in [recall_migOnly_policy.txt](recall_migOnly_policy.txt) and [recall_migPmig_policy.txt](recall_migOnly_policy.txt). Further options can be specified with the `mmapplypolicy` command. 	
 
 
 ## Processing 
