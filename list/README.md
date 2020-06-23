@@ -14,7 +14,7 @@ For installation, copy the wrapper script `list.sh` along with the predefined po
 
 The syntax is:
 
-	# ist.sh state fspath [-v -s]
+	# list.sh state fspath [-v -s]
 	
 	Options:
 	state		is the name of the policy to be executed according to the above naming conventions
