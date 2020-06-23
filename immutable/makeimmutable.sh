@@ -115,7 +115,7 @@ system_log () {
 ## Print a message to the stdout
 ## Usage: user_log <log_message>
 user_log () {
-    echo -e $@
+    echo -e "Makeimmutable $@"
 }
 
 
