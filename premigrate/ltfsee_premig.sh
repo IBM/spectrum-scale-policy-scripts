@@ -2,7 +2,7 @@
 ################################################################################
 # The MIT License (MIT)                                                        #
 #                                                                              #
-# Copyright (c) 2019 Nils Haustein                             				   #
+# Copyright (c) 2020 Nils Haustein                             				   #
 #                                                                              #
 # Permission is hereby granted, free of charge, to any person obtaining a copy #
 # of this software and associated documentation files (the "Software"), to deal#
@@ -41,16 +41,6 @@
 # Output:
 # Writes runtime information to STDOUT - ends up in mmapplypolicy output
 #
-# Example Policy:
-# /* define macros */
-# define(is_empty, (KB_ALLOCATED=0))
-# define( is_premigrated,(MISC_ATTRIBUTES LIKE '%M%' AND MISC_ATTRIBUTES NOT LIKE '%V%') )
-# /* define exclude rule */
-# RULE 'exclude' EXCLUDE WHERE (PATH_NAME LIKE '%/.SpaceMan/%' OR PATH_NAME LIKE '%/.snapshots/%')
-# /* define external pool */
-# RULE 'extpool' EXTERNAL POOL 'ltfs' EXEC 'ltfsee_premig.sh' OPTS '-p test@eelib1'
-# /* define migration rule */
-# RULE 'premigall' MIGRATE FROM POOL 'system' TO POOL 'ltfs' WHERE NOT (is_empty) AND NOT (is_premigrated)
 #
 # Invokation:
 # mmapplypolicy fsname -P policyfile
@@ -61,6 +51,7 @@
 # 12/21/15 create the general receiver
 # 08/23/17 ltfsee premigrate
 # 08/31/17 streamline
+# 06/23/20 adopt to eeadm command, improve messaging
 
 #global variables for this script
 # set the default option in case $3 is not give, allows to specify the pool in the syntax "-p pool@lib", just in case the pool is not set in the external pool definition of the migrate policy
@@ -70,7 +61,7 @@ LTFSEEDIR=/opt/ibm/ltfsee/bin
 
 #++++++++++++++++++++++++++ MAIN ++++++++++++++++++++++++++++++++++++++
 echo "================================================================================================"
-echo "$(date +"%Y-%b-%d %H:%M:%S") ltfsee_premig.sh invoked with arguments: $*"
+echo "$(date +"%Y-%b-%d %H:%M:%S") LTFSEE_PREMIG invoked with arguments: $*"
 
 ## Parse Arguments & execute
 #$1 is the policy operation (list, migrate, etc) 
@@ -85,41 +76,41 @@ option=$*
 case $op in 
   # there will always be a TEST call with $2 being the file system path
   TEST ) 
-       echo "INFO: TEST option received for $polFile"
+       echo "LTFSEE_PREMIG INFO: TEST option received for $polFile"
 	   if [[ ! -z "$polFile" ]] then
 	     if [[ ! -d "$polFile" ]] then
-		   echo "WARNING: TEST directory $polFile does not exists."
+		   echo "LTFSEE_PREMIG WARNING: TEST directory $polFile does not exists."
 		 fi
 	   fi
 	   ;;
   MIGRATE )
   # this is the actual migrate call where we call ltfsee premigrate
-       echo "INFO: MIGRATE option received with file name $polFile and options $option"
+       echo "LTFSEE_PREMIG INFO: MIGRATE option received with file name $polFile and options $option"
        #set option to default if not set
        if [[ -z $option ]] then 
 	     if [[ -z $DEFOPTS ]] then
-		   echo "ERROR: Pool name not specified in the external pool rule."
+		   echo "LTFSEE_PREMIG ERROR: Pool name not specified in the external pool rule."
 		   exit 1
 		 else
 	      option=$DEFOPTS
 		 fi
 	   fi
 	   
-	   echo "INFO: Start processing files $polFile with ltfsee premigrate to pool $option"
-	   $LTFSEEDIR/ltfsee premigrate -s $polFile $option 
+	   echo "LTFSEE_PREMIG INFO: Start processing files $polFile with ltfsee premigrate to pool $option"
+	   $LTFSEEDIR/eeadm premigrate $polFile $option 
 	   rc=$?
        if (( rc != 0 )) then
-         echo "WARNING: ltfsee premigrated ended with return code $rc"	
+         echo "LTFSEE_PREMIG WARNING: ltfsee premigrated ended with return code $rc"	
        fi		 
        ;;
   REDO )
-	   echo "INFO: REDO option received with file name $polFile and options $option"
+	   echo "LTFSEE_PREMIG INFO: REDO option received with file name $polFile and options $option"
        ;;
   * )
-	   echo "WARNING: UNKNOWN operation ($op) received with file name $polFile and options $option"
+	   echo "LTFSEE_PREMIG WARNING: UNKNOWN operation ($op) received with file name $polFile and options $option"
        ;;
 esac
 
-echo "$(date +"%Y-%b-%d %H:%M:%S") ltfsee_premig ended"
+echo "$(date +"%Y-%b-%d %H:%M:%S") LTFSEE_PREMIG ended"
 echo 
 exit 0
