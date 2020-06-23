@@ -27,11 +27,11 @@
 #
 # Description: 
 # Interface script for MIGRATE policy invoked by mmapplypolicy 
-# Invokes ltfsee recall -l libname filelist
+# Invokes eeadm recall -l libname filelist
 #
 # Prerequisite:
-# EXTERNAL pool policy that identifies files to be recalled.
-#
+# EXTERNAL pool policy that identifies files to be recalled. Samples of recall policies are provided in the GitHub repository
+# 
 # Input:
 # invoked by mmapplypolicy with the following parameters:
 #   $1 operation (migrate, test)
@@ -41,15 +41,6 @@
 # Output:
 # Writes runtime information to STDOUT - ends up in mmapplypolicy output
 #
-# Example Policy:
-# /* define path name pattern for the file to be recalled */
-# define(recall_dir, (PATH_NAME LIKE '%'))
-# /* define external pool with customized interface script and target library for recall*/
-# RULE 'extpool' EXTERNAL POOL 'ltfs' EXEC '/path/ltfsee_recall.sh' OPTS 'eelib1'
-# /* define migration rule to recall all migrated files matching the path pattern*/
-# RULE 'recall' MIGRATE FROM POOL 'ltfs' TO POOL 'system' FOR FILESET ('swr') WHERE 
-#(XATTR('dmapi.IBMPMig') IS NULL) AND NOT (XATTR('dmapi.IBMTPS') IS NULL) and (recall_dir)
-#
 # Invokation:
 # mmapplypolicy fsname -P policyfile
 #
@@ -58,23 +49,24 @@
 # 12/20/15 implementation for immutability, some streamlining of existing code
 # 12/21/15 create the general receiver
 # 09/01/17 ltfsee recall
+# 06/23/20 adapt eeadm recall command, improved messaging
 
 #global variables for this script
-# set the default option in case $3 is not give, allows to specify the library name
+# set the default option for the eeadm recall command in case $3 is not give (like --resident or -l libname)
 DEFOPTS=""
 # define ltfsee directory
 LTFSEEDIR=/opt/ibm/ltfsee/bin
 
 #++++++++++++++++++++++++++ MAIN ++++++++++++++++++++++++++++++++++++++
 echo "================================================================================================"
-echo "$(date +"%Y-%b-%d %H:%M:%S") ltfsee_recall.sh invoked with arguments: $*"
+echo "$(date +"%Y-%b-%d %H:%M:%S") EE_RECALL invoked with arguments: $*"
 
 ## Parse Arguments & execute
 #$1 is the policy operation (list, migrate, etc) 
 op=$1
 #$2 is the policy file name
 polFile=$2
-#$3 is the option given in the EXTERNAL LIST rule with OPTS '..' should be the pool 
+#$3 options passed to the eeadm recall command (like --resident and -l libname) 
 shift 2
 option=$*
     
@@ -82,41 +74,38 @@ option=$*
 case $op in 
   # there will always be a TEST call with $2 being the file system path
   TEST ) 
-       echo "INFO: TEST option received for $polFile"
+       echo "EE_RECALL INFO: TEST option received for $polFile"
 	   if [[ ! -z "$polFile" ]] then
 	     if [[ ! -d "$polFile" ]] then
-		   echo "WARNING: TEST directory $polFile does not exists."
+		   echo "EE_RECALL WARNING: TEST directory $polFile does not exists."
 		 fi
 	   fi
 	   ;;
   RECALL | MIGRATE | LIST )
-  # this is the actual migrate call where we call ltfsee premigrate
-       echo "INFO: $op option received with file name $polFile and options $option"
-       #set option to default if not set
+  # this is the actual migrate call where we call eeadm recall
+       echo "EE_RECALL INFO: $op option received with file name $polFile and options $option"
+       #set option to default if not set with $3
        if [[ -z $option ]] then 
-	     if [[ -z $DEFOPTS ]] then
-		   echo "ERROR: Library name not specified in the external pool rule."
-		   exit 1
-		 else
+	     if [[ ! -z $DEFOPTS ]] then
 	      option=$DEFOPTS
 		 fi
 	   fi
 	   
-	   echo "INFO: Start processing files $polFile with ltfsee recall from library $option"
-	   $LTFSEEDIR/ltfsee recall -l $option $polFile  
+	   echo "EE_RECALL INFO: Start processing files $polFile with eeadm recall from library $option"
+	   $LTFSEEDIR/eeadm recall $polFile $option
 	   rc=$?
        if (( rc != 0 )) then
-         echo "WARNING: ltfsee recall ended with return code $rc"	
+         echo "EE_RECALL WARNING: eeadm recall ended with return code $rc"	
        fi		 
        ;;
   REDO )
-	   echo "INFO: REDO option received with file name $polFile and options $option"
+	   echo "EE_RECALL INFO: REDO option received with file name $polFile and options $option"
        ;;
   * )
-	   echo "WARNING: UNKNOWN operation ($op) received with file name $polFile and options $option"
+	   echo "EE_RECALL WARNING: UNKNOWN operation ($op) received with file name $polFile and options $option"
        ;;
 esac
 
-echo "$(date +"%Y-%b-%d %H:%M:%S") ltfsee_recall ended"
+echo "$(date +"%Y-%b-%d %H:%M:%S") EE_RECALL ended"
 echo 
 exit 0

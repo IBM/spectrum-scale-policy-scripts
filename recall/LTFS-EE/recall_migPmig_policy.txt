@@ -1,0 +1,9 @@
+/* define the path and file name pattern to be recalled ('%' means all files) */
+define(recall_dir, (PATH_NAME LIKE '%'))
+
+/* define external pool */
+RULE 'extpool' EXTERNAL POOL 'ltfs' EXEC '/root/silo/recall/ltfsee_recall.sh' OPTS '--resident'
+
+/* define migration rule recall of premigrated and migrated files */
+RULE 'recall' MIGRATE FROM POOL 'ltfs' TO POOL 'system' FOR FILESET ('test') WHERE 
+NOT (XATTR('dmapi.IBMTPS') IS NULL) and (recall_dir)

@@ -1,37 +1,56 @@
 
-
 # Script: ltfsee_recall.sh
 
-## Description: 
+
+## Description
+
 This script can be used as an interface script in combination with a migration policy to recall files from Spectrum Archive EE to Spectrum Scale. This script receives the file list from the policy engine according to the MIGRATE rule and feeds this into the ltfsee recall command. 
 
-## Prerequisite: 
-The interface customized interface script (ltfsee_recall.sh) must be installed on all nodes that are enabled to perform the migration. 
+Please notice that IBM Spectrum Archive Enterprise Edition version 1.3.0.7 and above has built in capabilities to recall files from LTFS Tape to IBM Spectrum Scale disk. For more details see the IBM Spectrum Archive EE Knowledge Center - section [Manual-recall-with-the mmapplypolicy-command](https://www.ibm.com/support/knowledgecenter/en/ST9MBR_1.3.0/ltfs_ee_recall_mmapplypolicy.html). If you are using this version of IBM Spectrum Archive EE it is recommended to use the built in approach.
 
-An external pool rule that invokes this script in combination with a MIGRATE rule is required. Find an example below:
 
-	/* define macros */
-	define(recall_dir, (PATH_NAME LIKE '%'))
+## Prerequisite
+
+Copy the `ltfsee_recall.sh` script to a directory of the executing EE node. To run the policy on multiple EE nodes the script must be placed in the same directory on each node. Consider placing it in a shared file system. 
+
+Adjust the recall policy according to your needs and store it in the same directory as the `ltfsee_recall.sh` script. The directory name where the `ltfsee_recall.sh` script is stored on all executing nodes must be updated in the EXTERNAL POOL rule. 
+
+There are two policies provided:
+
+[recall_migOnly.txt](recall_migOnly.txt):
+This policy recalls all migrated files that match clause in the macro `recall_dir`. Only migrated files are recalled. To recall migrated files directly to resident state the option `--resident` has to be added to the EXTERNAL POOL rule in the clause: `OPTS '--resident'`. Note, you cannot recall pre-migrated files, unless you recall to resident state. 
+
+[recall_migPmig.txt](recall_migOnly.txt):
+This policy recalls all pre-migrated and migrated files to resident state that match clause in the macro `recall_dir`. 
+ 
+If the `ltfsee_recall.sh` script and the policies are stored in directory `/usr/local/bin` then the EXTERNAL POOL rule EXEC clause must be adjusted to:
+
+	RULE 'extpool' EXTERNAL POOL 'ltfs' EXEC '/usr/local/bin/ltfsee_recall.sh' 
+
+
+## Invokation
+
+The recall script `ltfsee_recall.sh` is invoked with the policy engine:
+
+
+	# mmapplypolicy fsname -P policyfile -N nodenames --single-instance
 	
-	/* define external pool */
-	RULE 'extpool' EXTERNAL POOL 'ltfs' EXEC '/root/silo/recall/ltfsee_recall.sh' OPTS 'eelib1'
-	
-	/* define migration rule */
-	RULE 'recall' MIGRATE FROM POOL 'ltfs' TO POOL 'system' FOR FILESET ('swr') WHERE 
-	(XATTR('dmapi.IBMPMig') IS NULL) AND NOT (XATTR('dmapi.IBMTPS') IS NULL) and (recall_dir)
-
-### Note: 
-The example above shows the policy that pre-migrates all files that are not pre-migrated and are larger than zero bytes. The external pool rule executes the customized interface script (/path/ltfsee_premig.sh). The MIGRATE rule selects all files that are not yet pre-migrated and not empty.
+	Options:
+		fsname			is the file system name, file system path or the file system path with a subdirectory. 
+		-P policyfile		is the policy file including the EXTERNAL POOL rule specifying the `ltfsee_premig.sh` interface script and the MIGRATE rule. 
+		-N nodenames		node name or node class name that executes this policy. Must be Spectrum Archive EE nodes
+		--single-instance	run only one instance of this policy. 
 
 
-## Invokation: 
-  mmapplypolicy fsname -P policyfile -N ltfseenodes --single-instance [-B -m]
+Two example for the `policyfile` are provided in [recall_migOnly.txt](recall_migOnly.txt) and [recall_migPmig.txt](recall_migOnly.txt). Further options can be specified with the `mmapplypolicy` command. 	
 
-## Processing: 
-The policy engine applies the MIGRATE rules and selects files according to the criteria. It passes these files to the interface script (ltfsee_recall.sh). The interface script invokes ltfsee recall command with the list of files and the target pool. 
 
-## Output: 
+## Processing 
+
+The policy engine (`mmapplypolicy`) identifies files according to the migrate rule and passes these files to the interface script `ltfsee_recall.sh`. The interface script `ltfsee_recall.sh` recalls the selected files using the command: `eeadm recall filelist [--resident]`. The option `--resident` can be specified via the OPTS clause in the EXTERNAL POOL definition of the policies. 
+
+
+## Output
+
 Output of the script is logged to STDOUT and ends up within the output of the mmapplypolicy command
-
-
 
