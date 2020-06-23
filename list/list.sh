@@ -47,21 +47,24 @@ fsName=""
 # define output format: 0 - number of files only; 1 - filenames
 numbersOnly=1
 
+# Constant: GPFS path
+gpfsPath="/usr/lpp/mmfs/bin"
+
 
 #function syntax
 function syntax 
 {
   echo 
   echo "Syntax: list state filesystem [-v -s workDir]"
-  echo "This program lists the files according to the HSM state, Valid states are:"
-  echo "  mig:        list all migrated files"
-  echo "  pmig:       list all premigrated files"
-  echo "  res:        list all resident files"
-  echo "  all:        provides statistic about all states"
+  echo "  This program lists the files according to the HSM state, Valid states are:"
+  echo "    mig:        list all migrated files"
+  echo "    pmig:       list all premigrated files"
+  echo "    res:        list all resident files"
+  echo "    all:        provides statistic about all states"
   echo 
-  echo "  Filesystem: is the name of the file system or directory"
-  echo "  -v:         shows the file names selected by the policy (default is number of files)"
-  echo "  -s workDir: specify the working directory for the policy engine output files (default is $workDir)"
+  echo "    Filesystem: is the name of the file system or directory"
+  echo "    -v:         shows the file names selected by the policy (default is number of files)"
+  echo "    -s workDir: specify the working directory for the policy engine output files (default is $workDir)"
   echo 
 }
 
@@ -142,7 +145,7 @@ done
 # if state=all then run run mmapplypolicy and subsequently determine the number of respective files
 
 # run mmapplypolicy
-mmapplypolicy $fsName -P $polfile -s $workDir -f $ofPrefix -I defer > $logfile
+$gpfsPath/mmapplypolicy $fsName -P $polfile -s $workDir -f $ofPrefix -I defer > $logfile
 rc=$?
 echo "=============================================================================="
 if (( rc == 0 )); 
