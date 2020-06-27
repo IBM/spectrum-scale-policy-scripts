@@ -1,0 +1,15 @@
+/* define exclude list */
+define(  exclude_list,
+  (PATH_NAME LIKE '%/.SpaceMan/%' OR 		
+   PATH_NAME LIKE '%/.ltfsee/%' OR 			
+   PATH_NAME LIKE '%/.mmSharedTmpDir/%' OR	
+   PATH_NAME LIKE '%/.snapshots/%' OR 		
+   NAME LIKE '.mmbackupShadow%' OR 			
+   NAME LIKE 'mmbackup%')					
+) 
+
+/* define the interface script */
+RULE EXTERNAL LIST 'recieveAge' EXEC '/usr/local/bin/receiver.sh' 
+
+
+RULE 'list_age' LIST 'recieveAge' WHERE (DAYS(CURRENT_TIMESTAMP) - DAYS(MODIFICATION_TIME) > 2) AND NOT (exclude_list)

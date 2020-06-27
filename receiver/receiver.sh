@@ -56,17 +56,19 @@
 # 10/09/12 first implementation based GAD startbackup
 # 12/20/15 implementation for immutability, some streamlining of existing code
 # 12/21/15 create the general receiver
+# 06/26/20 Add name of the program to the output messages.
 
 #global variables for this script
+#----------------------------------
 # define paths for log files and output files
-MYPATH="./receiver/"
+MYPATH="./receiver"
 # logfile used for system_log function
-LOGFILE=$MYPATH"receiver.log"
+LOGFILE=$MYPATH/"receiver.log"
 # outfile is used to print file names to
-OUTPUTFILE=$MYPATH"receiver.out"
+OUTPUTFILE=$MYPATH/"receiver.out"
 # sets the log level for the system log, everything below that number is logged
 LOGLEVEL=1
-# set the default option in case $3 is not give
+# set the default option for the file list processing in case $3 is not given
 DEFOPTS=""
 
 
@@ -83,9 +85,9 @@ system_log () {
   LINE=$2
   if [ $LOGLEVEL -ge $SEV ] ; then
     if [[ -z "$LINE" ]]; then
-	  echo -e "INTERNAL WARNING: Improper value given to system_log function ($@)" >> $LOGFILE
+	  echo -e "RECEIVER INTERNAL WARNING: Improper value given to system_log function ($@)" >> $LOGFILE
 	else
-      echo -e "$LINE" >> $LOGFILE
+      echo -e "RECEIVER: $LINE" >> $LOGFILE
 	fi
   fi
 }
@@ -93,7 +95,7 @@ system_log () {
 ## Print a message to the stdout
 ## Usage: user_log <log_message>
 user_log () {
-    echo -e $@
+    echo -e "RECEIVER $@"
 }
 
 
@@ -104,13 +106,14 @@ get_cur_date_time(){
 }
 
 #++++++++++++++++++++++++++ MAIN ++++++++++++++++++++++++++++++++++++++
-user_log "$(get_cur_date_time) receiver invoked by policy engine"
+user_log "$(get_cur_date_time) receiver.sh invoked by policy engine"
 
 # check the path for logging
 if [[ ! -d $MYPATH ]] then
   mkdir -p $MYPATH
   rc=$?
   if (( rc > 0 )) then
+    system_log "ERROR: failed to create directory $MYPATH, check permissions"
     user_log "ERROR: failed to create directory $MYPATH, check permissions"
 	exit 1
   fi
@@ -158,9 +161,11 @@ case $op in
 	      option=$DEFOPTS
 	   fi
 	   
+	   # process the files
 	   itemNum=0
        numEntries=$(wc -l $polFile | awk '{print $1}')
-	   system_log 1 "INFO: Start processing $numEntries files"
+	   system_log 1 "INFO: Start processing $numEntries files, outputfile=$OUTPUTFILE"
+	   user_log "INFO: Start processing $numEntries files, outputfile=$OUTPUTFILE"
 	   cat $polFile | while read line 
 	   do
 		 # use set to get file name, does tolerate blanks
@@ -188,4 +193,5 @@ esac
 user_log "$(get_cur_date_time) receiver ended"
 system_log 1 "$(get_cur_date_time) receiver ended"
 
+# exit 0 if things are OK
 exit 0
