@@ -74,8 +74,11 @@ Copy the `receiver.sh` script to a common directory of all IBM Spectrum Scale no
 
 
 Create the EXTERNAL LIST policy according to the needs and specify the path of the `receiver.sh` script in the EXTERNAL LIST rule. There are three examples policy files:
+
 [policy_receiver_mig.txt](policy_receiver_mig.txt): selects all file that are migrated and invokes `receiver.sh` with the selected path and file names.
+
 [policy_receiver_age.txt](policy_receiver_age.txt): selects all file that have not been accessed for more than 2 days and invokes `receiver.sh` with the selected path and file names.
+
 [policy_receiver_all.txt](policy_receiver_all.txt): selects all file and invokes `receiver.sh` with the selected path and file names.
 
 
