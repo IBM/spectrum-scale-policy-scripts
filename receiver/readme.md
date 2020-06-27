@@ -16,7 +16,7 @@ An EXTERNAL LIST policy consists of a EXTERNAL LIST rule and a LIST RULE. The EX
 	) 
 
 	/* define migrated state */ 
-	define(is_migrated, (MISC_ATTRIBUTES LIKE '%V'))
+	define(is_migrated, (MISC_ATTRIBUTES LIKE '%V%'))
 
 	/* define the interface script */
 	RULE EXTERNAL LIST 'recieve-mig' EXEC 'usr/local/bin/receiver.sh' 
@@ -30,9 +30,10 @@ This policy can be invoked with the command:
 	# mmapplypolicy fsname -P policyfile -B 1000 -m 2 -N node1,node2 --single-instance 
 
 The parameter `fsname` denotes the name or the path of the file system or subdirectory. 
+
 The parameter `-P policyfile` denotes the file name that includes the EXTERNAL LIST policy. 
 
-The IBM Spectrum Scale policy engine (`mmapplypolicy`) first runs the LIST rule and selects all migrated files in fileset `test`. The full path and filenames of these files are put in file lists whereby each file list contains 1000 file name (parameter `-B 1000`). Each file list is passed to one instance of the interface script defined by the EXTERNAL LIST rule (`/usr/local/bin/receiver.sh`). The policy engine starts 2 instances of the interface script per node (parameter `-m 2`). The nodes that execute the `receiver.sh` program are node1 and node2 (`-N node1,node2`). 
+The IBM Spectrum Scale policy engine (`mmapplypolicy`) first runs the LIST rule and selects all migrated files in fileset `test`. The full path and filenames of these files are put in file lists, whereby each file list contains 1000 file name (parameter `-B 1000`). Each file list is passed to one instance of the interface script defined by the EXTERNAL LIST rule (`/usr/local/bin/receiver.sh`). The policy engine starts 2 instances of the interface script per node (parameter `-m 2`). The nodes that execute the `receiver.sh` program are node1 and node2 (`-N node1,node2`). 
 
 When invoked by the policy engine the `receiver.sh` script obtains two arguments:
 
