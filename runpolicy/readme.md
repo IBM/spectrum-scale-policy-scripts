@@ -93,7 +93,7 @@ In folder [sample-policies](../sample-policies/) you can find some useful sample
 		runpolicy.sh path list-byState.txt -I defer -f dirPrefix
 
   
-   The resulting file lists are stored in a directory denoted by parameter `-f dirPrefix`. File names of resident files are stored in file `dirPrefix.list.r`, file names of premigrated files are stored in file `dirPrefix.list.p` and file names of migrated files are stored in file `dirPrefix.list.m`. 
+   The resulting file lists are stored in a directory denoted by parameter `-f dirPrefix`. File names of resident files are stored in file `dirPrefix.list.r`, file names of premigrated files are stored in file `dirPrefix.list.p` and file names of migrated files are stored in file `dirPrefix.list.m`. For example if the parameter `dirPrefix` is set to `/tmp/files`, then the file lists would be named: `/tmp/files.list.r`, `/tmp/files.list.p` and `/tmp/files.list.`. 
    Instead of specifying the parameter `-I defer -f dirPrefix` in the command line, these can also be encoded in the script variable `DEFAULT_OPTS`.
 
    
@@ -103,7 +103,7 @@ In folder [sample-policies](../sample-policies/) you can find some useful sample
 		runpolicy.sh path list-byTapeID.txt -I defer -f dirPrefix -M TAPEID=volser
 
    The tape ID for which the files should be listed in provided with parameter `-M TAPEID=volser`.
-   The resulting file list is stored in a directory denoted by parameter `-f dirPrefix` and named `dirPrefix.list.fileontape`. This file list includes all path and file names of files stored on the subject tape ID. This is includes files that have the primary or a secondary copy on the subject tape. 
+   The resulting file list is stored in a directory denoted by parameter `-f dirPrefix` and named `dirPrefix.list.filesontape`.  For example if the parameter `dirPrefix` is set to `/tmp/files`, then the file list would be named: `/tmp/files.list.filesontape`. This file list includes all path and file names of files stored on the subject tape ID. This is includes files that have the primary or a secondary copy on the subject tape. 
 
 
 - Policy [list-byStateWithTapeID.txt](../sample-policies/list-byStateWithTapeID.txt) creates a lists of all files that that are in premigrated and migrated state includin the tape ID where these files are (pre)migrated to. To run the policy:
@@ -111,7 +111,7 @@ In folder [sample-policies](../sample-policies/) you can find some useful sample
 
 		runpolicy.sh path list-byStateWithTapeID.txt -I defer -f dirPrefix 
 
-   The resulting file lists are stored in a directory denoted by parameter `-f dirPrefix`. File names and tape ID of premigrated files are stored in file `dirPrefix.list.premigTapeID` and file names and tape ID of migrated files are stored in file `dirPrefix.list.migTapeID`.
+   The resulting file lists are stored in a directory denoted by parameter `-f dirPrefix`. File names and tape ID of premigrated files are stored in file `dirPrefix.list.premigTapeID` and file names and tape ID of migrated files are stored in file `dirPrefix.list.migTapeID`. For example if the parameter `dirPrefix` is set to `/tmp/files`, then the file lists would be named: `/tmp/files.list.premigTapeID` and `/tmp/files.list.migTapeID`.
    Instead of specifying the parameter `-I defer -f dirPrefix` in the command line, these can also be encoded in the script variable `DEFAULT_OPTS`.
 
 
