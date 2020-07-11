@@ -48,7 +48,7 @@ In folder [sample-policies](../sample-policies/) you can find some useful sample
 - Policy [migrate-all.txt](../sample-policies/migrate-all.txt) migrates all files that are not migrated, including pre-migrated files. To run the policy:
 
 
-	runpolicy.sh path migrate-all.txt -M EEPOOL=pool1@lib1 [opts]
+		runpolicy.sh path migrate-all.txt -M EEPOOL=pool1@lib1 [opts]
 
   
    The parameter `-M EEPOOL=pool1@lib1` denotes the destination pool for the migration and must be an existing pool in the Spectrum Archive EE system. Additional options for the policy engine should be configured. These options are passed to the `mmapplypolicy` command should include: `-B bucketsize -m threads -N nodenames --single-instance`. These options can either be encoded in the command line parameter `opts`, or these options can be encoded in the script variable `DEFAULT_OPTS`.
@@ -57,20 +57,65 @@ In folder [sample-policies](../sample-policies/) you can find some useful sample
 - Policy [migrate-fset.txt](../sample-policies/migrate-fset.txt) migrates all files for a particular fileset that are not migrated, including pre-migrated files. To run the policy:
 
 	
-	runpolicy.sh path migrate-fset.txt -M EEPOOL=pool1@lib1 -M FSET=filesetname [opts]
+		runpolicy.sh path migrate-fset.txt -M EEPOOL=pool1@lib1 -M FSET=filesetname [opts]
 
   
    The parameter `-M EEPOOL=pool1@lib1` denotes the destination pool for the migration and must be an existing pool in the Spectrum Archive EE system. The parameter `-M FSET=filesetname` denotes the fileset name subject for migration. Additional options for the policy engine should be configured. These options are passed to the `mmapplypolicy` command should include: `-B bucketsize -m threads -N nodenames --single-instance`. These options can either be encoded in the command line parameter `opts`, or these options can be encoded in the script variable `DEFAULT_OPTS`.
+
+- Policy [premigrate-all.txt](../sample-policies/premigrate-all.txt) premigrates all resident files. To run the policy:
+
+
+		runpolicy.sh path premigrate-all.txt -M EEPOOL=pool1@lib1 [opts]
+
+  
+   The parameter `-M EEPOOL=pool1@lib1` denotes the destination pool for the premigration and must be an existing pool in the Spectrum Archive EE system. Additional options for the policy engine should be configured. These options are passed to the `mmapplypolicy` command should include: `-B bucketsize -m threads -N nodenames --single-instance`. These options can either be encoded in the command line parameter `opts`, or these options can be encoded in the script variable `DEFAULT_OPTS`.
+
+
+- Policy [premigrate-fset.txt](../sample-policies/premigrate-fset.txt) migrates all files for a particular fileset that are not migrated, including pre-migrated files. To run the policy:
+
+	
+		runpolicy.sh path premigrate-fset.txt -M EEPOOL=pool1@lib1 -M FSET=filesetname [opts]
+
+  
+   The parameter `-M EEPOOL=pool1@lib1` denotes the destination pool for the premigration and must be an existing pool in the Spectrum Archive EE system. The parameter `-M FSET=filesetname` denotes the fileset name subject for premigration. Additional options for the policy engine should be configured. These options are passed to the `mmapplypolicy` command should include: `-B bucketsize -m threads -N nodenames --single-instance`. These options can either be encoded in the command line parameter `opts`, or these options can be encoded in the script variable `DEFAULT_OPTS`.
+
+
+- Policy [recall-all.txt](../sample-policies/recall-all.txt) recalls all files located in a specified directory (`RECAllDIR`). After recall files are in status `premigrated`. To run the policy:
+
+
+		runpolicy.sh path recall-all.txt -M RECALLDIR=recallpath [opts]
+
+  
+   The parameter `-M RECALLDIR=recallpath` denotes the path in the Spectrum Scale file system subject for recall. All migrated files in this path are being recalled. Additional options for the policy engine should be configured. These options are passed to the `mmapplypolicy` command should include: `-B bucketsize -m threads -N nodenames --single-instance`. These options can either be encoded in the command line parameter `opts`, or these options can be encoded in the script variable `DEFAULT_OPTS`.
+
+- Policy [list-byState.txt](../sample-policies/list-byState.txt) creates lists of all files in accordance to their migration state. For each migration state (resident, migrated, premigrated) a separate file list is created. To run the policy:
+
+
+		runpolicy.sh path list-byState.txt -I defer -f dirPrefix
+
+  
+   The resulting file lists are stored in a directory denoted by parameter `-f dirPrefix`. File names of resident files are stored in file `dirPrefix.list.r`, file names of premigrated files are stored in file `dirPrefix.list.p` and file names of migrated files are stored in file `dirPrefix.list.m`. 
+   Instead of specifying the parameter `-I defer -f dirPrefix` in the command line, these can also be encoded in the script variable `DEFAULT_OPTS`.
+
    
-   
-premigrate-all.txt
-premigrate-fset.txt
-recall-all.txt
-list-byState.txt
-list-byTapeID.txt
-list-byStateWithTapeID.txt
+- Policy [list-byTapeID.txt](../sample-policies/list-byTapeID.txt) creates a list of all files that are located on a particular tape ID. The tape ID is specified in the command line. To run the policy:
+
+
+		runpolicy.sh path list-byTapeID.txt -I defer -f dirPrefix -M TAPEID=volser
+
+   The tape ID for which the files should be listed in provided with parameter `-M TAPEID=volser`.
+   The resulting file list is stored in a directory denoted by parameter `-f dirPrefix` and named `dirPrefix.list.fileontape`. This file list includes all path and file names of files stored on the subject tape ID. This is includes files that have the primary or a secondary copy on the subject tape. 
+
+
+- Policy [list-byStateWithTapeID.txt](../sample-policies/list-byStateWithTapeID.txt) creates a lists of all files that that are in premigrated and migrated state includin the tape ID where these files are (pre)migrated to. To run the policy:
+
+
+		runpolicy.sh path list-byStateWithTapeID.txt -I defer -f dirPrefix 
+
+   The resulting file lists are stored in a directory denoted by parameter `-f dirPrefix`. File names and tape ID of premigrated files are stored in file `dirPrefix.list.premigTapeID` and file names and tape ID of migrated files are stored in file `dirPrefix.list.migTapeID`.
+   Instead of specifying the parameter `-I defer -f dirPrefix` in the command line, these can also be encoded in the script variable `DEFAULT_OPTS`.
 
 
 ## Output
 
-The `runpolicy.sh` script runs the `mmapplypolicy` command and logs all output to the console. 
+The `runpolicy.sh` script runs the `mmapplypolicy` command and logs all output to the console. The script output is marked with by token `RUNPOLICY`.
