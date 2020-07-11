@@ -1,0 +1,27 @@
+/* migrate all files */
+/* the substitiution variable EEPOOL has to passed from mmapplypolicy -M EEPOOL=pool1@lib1 */
+
+/* Define exclude list to exclude SpaceMan and snapshots */
+RULE 'exclude' EXCLUDE WHERE 
+  (PATH_NAME LIKE '%/.SpaceMan/%' OR 		/* HSM directory used for TSM and LTFS */
+   PATH_NAME LIKE '%/.ltfsee/%' OR 			/* LTFS metadata directory*/
+   PATH_NAME LIKE '%/.mmSharedTmpDir/%' OR	/* default global shared directory used by mmapplypolicy */
+   PATH_NAME LIKE '%/.snapshots/%' OR 		/* snapshot */
+   NAME LIKE '.mmbackupShadow%' OR 			/* mmbackup shadow database */
+   NAME LIKE 'mmbackup%')					/* other mmbackup files */
+
+/* Define LTFS as external pool */
+RULE EXTERNAL POOL 'ltfs'
+EXEC '/opt/ibm/ltfsee/bin/eeadm' /* full path to ltfsee command must be specified */
+OPTS 'EEPOOL' /* this is our pool in LTFS EE which is given by the runpolicy script*/
+SIZE 10485760
+
+/* here comes the migration rule whereby the FILESYSTEM is given by the runpolicy script*/
+RULE 'ee-all-mig' MIGRATE FROM POOL 'system' TO POOL 'ltfs' 
+WHERE (KB_ALLOCATED > 0)
+
+/* Invokation:
+mmapplypolicy path -P thispolicyfile --single-instance -N eenodes -m 1 -M EEPOOL=pool1@lib1
+or
+runpolicy path thispolicyfile -M EEPOOL=pool1@lib1 -I yes
+*/

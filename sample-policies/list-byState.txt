@@ -1,0 +1,34 @@
+/* policy lists file by state */
+
+/* define exclude list */
+define(  exclude_list,
+  (PATH_NAME LIKE '%/.SpaceMan/%' OR 		
+   PATH_NAME LIKE '%/.ltfsee/%' OR 			
+   PATH_NAME LIKE '%/.mmSharedTmpDir/%' OR	
+   PATH_NAME LIKE '%/.snapshots/%' OR 		
+   NAME LIKE '.mmbackupShadow%' OR 			
+   NAME LIKE 'mmbackup%')					
+) 
+
+/* define macros for states */
+define(is_premigrated,(MISC_ATTRIBUTES LIKE '%M%' AND MISC_ATTRIBUTES NOT LIKE '%V%'))
+define(is_migrated,(MISC_ATTRIBUTES LIKE '%V%'))
+define(is_resident,(MISC_ATTRIBUTES NOT LIKE '%M%'))
+
+/* define external lists */
+RULE EXTERNAL LIST 'r' EXEC ''
+RULE EXTERNAL LIST 'p' EXEC ''
+RULE EXTERNAL LIST 'm' EXEC ''
+
+/* rules to identify files by state */
+RULE 'r_files' LIST 'r' WHERE (is_resident) AND (NOT exclude_list)
+RULE 'p_files' LIST 'p' WHERE (is_premigrated) AND (NOT exclude_list)
+RULE 'm_files' LIST 'm' WHERE (is_migrated) AND (NOT exclude_list)
+
+/* Invokation:
+mmapplypolicy path -P thispolicyfile -I defer -f ./prefix
+or
+runpolicy path thispolicyfile -I defer -f ./prefix
+
+--> resulting file lists including path and file names are stored under name: prefix.list.m (migrated files, prefix.list.r (resident files), prefix.llist.p (premigrated files)
+*/

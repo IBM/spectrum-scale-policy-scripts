@@ -1,0 +1,41 @@
+/* this policy lists all files by state and the tape ID */
+/* to run this policy:  mmapplypolicy filesystem -P policyfile -f ./filename-I defer */
+/* resulting files are stored under name filename.migrated, filename.resident, filename.premigrate */
+
+/* define macros for states */
+define(is_premigrated,(MISC_ATTRIBUTES LIKE '%M%' AND MISC_ATTRIBUTES NOT LIKE '%V%'))
+define(is_migrated,(MISC_ATTRIBUTES LIKE '%V%'))
+
+/* define exclude list */
+define(  exclude_list,
+  (PATH_NAME LIKE '%/.SpaceMan/%' OR 		
+   PATH_NAME LIKE '%/.ltfsee/%' OR 			
+   PATH_NAME LIKE '%/.mmSharedTmpDir/%' OR	
+   PATH_NAME LIKE '%/.snapshots/%' OR 		
+   NAME LIKE '.mmbackupShadow%' OR 			
+   NAME LIKE 'mmbackup%')					
+) 
+
+/* define external lists */
+RULE EXTERNAL LIST 'migTapeID' EXEC ''
+RULE EXTERNAL LIST 'premigTapeID' EXEC ''
+
+/* show migrated files and tape */
+RULE 'MIGRATED' LIST 'migTapeID'
+FROM POOL 'system'
+SHOW('migrated ' || xattr('dmapi.IBMTPS'))
+WHERE ( is_migrated AND NOT exclude_list )
+
+/* show premigrated files and tape */
+RULE 'PREMIGRATED' LIST 'premigTapeID'
+FROM POOL 'system'
+SHOW('premigrated ' || xattr('dmapi.IBMTPS'))
+WHERE (is_premigrated AND NOT exclude_list)
+
+/* Invokation:
+mmapplypolicy path -P thispolicyfile -I defer -f ./prefix
+or
+runpolicy path thispolicyfile -I defer -f ./prefix
+
+--> resulting file list including path and file names are stored under name prefix.list.migTapeID (migrated files with Tape ID, prefix.list.premigTapeID (premigrated files with tape ID)
+*/

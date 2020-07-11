@@ -1,0 +1,21 @@
+/* recall all files from the given file system and directory */
+/* the substitiution variable RECALLDIR has to passed from mmapplypolicy -M RECALLDIR=/path */
+
+
+/* define macros */
+define(recall_dir, (PATH_NAME LIKE '%RECALLDIR%'))
+
+/* Define LTFS as external pool */
+RULE EXTERNAL POOL 'ltfs'
+EXEC '/opt/ibm/ltfsee/bin/eeadm' /* full path to ltfsee command must be specified */
+
+/* here comes the migration rule whereby the FILESYSTEM is given by the runpolicy script*/
+RULE 'recall' MIGRATE FROM POOL 'ltfs' TO POOL 'system' 
+WHERE (XATTR('dmapi.IBMPMig') IS NULL) AND 
+       NOT (XATTR('dmapi.IBMTPS') IS NULL) AND (recall_dir)
+
+/* Invokation:
+mmapplypolicy path -P thispolicyfile --single-instance -N eenodes -m 1 -M RECALLDIR=/path
+or
+runpolicy path thispolicyfile -M EEPOOL=pool1@lib1 -I yes -M RECALLDIR=/path
+*/

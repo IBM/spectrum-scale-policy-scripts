@@ -1,0 +1,13 @@
+/* policy lists files on a particular tape by state */
+/* the substitiution variable TAPEID has to passed from mmapplypolicy -M TAPEID=123456L8 */
+
+RULE EXTERNAL LIST 'fileontape' EXEC ''
+RULE 'findfiles' LIST 'filesontape' show (XATTR('dmapi.IBMTPS')) where XATTR('dmapi.IBMTPS') like '%TAPEID%'
+
+/* Invokation:
+mmapplypolicy path -P thispolicyfile -M TAPEID=123456L8 -f prefix -I defer
+or
+runpolicy path thispolicyfile -M TAPEID=123456L8 -f prefix -I defer
+
+--> file list including the path and file names of files stored on TAPEID is stored under name prefix.list.filesontape
+*/
