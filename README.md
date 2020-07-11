@@ -1,68 +1,52 @@
 
 Copyright 2019 Nils Haustein, released under the [MIT license](LICENSE)
 
-This project includes scripts for the Spectrum Scale Policy Engine:
+This project includes scripts and policies for the Spectrum ILM:
 
-## Folder [immutable](immutable/) - Set files to immutable
+## Folder [immutable](immutable/) - Script to set files to immutable
 
-Purpose: This script is an external pool script that receives the input from a
-list policy and sets all files identified by the LIST policy to immutable using
-the mmchattr command. The retention period is defined in the policy itself and
-is applied to each file by setting the retention time to current date and time
-plus retention period
+This folder contains a script and policies to identify files that are not immutable in an immutable fileset and sets these identified files to immutable. The `makeimmutable.sh` script is an external pool script that receives the input from an EXTERNAL LIST policy and sets all files identified by the LIST policy to immutable using the `mmchattr -i yes` command. The retention period is defined in the policy itself and is applied to each file by setting the retention time to current date and time plus retention period
 
 ------------------------
 
 ## Folder [list](list/) - List policy script
 
-Purpose: This script is a wrapper to run custom LIST policies. The list
-policy files are installed in the same path as the script list.sh. The list
-policy files have a specific naming convention with the "operation code"
-in the file name. The script list.sh is invoked with the "operation code"
-that executes the underlying policy file and prints the selected files to
-STDOUT.
+This folder contains a wrapper script for LIST policies. The main purpose is to list the numbers and optionally the file names of file in accordance to their migration state. This wrapper script can be dynamically extended to use other list policies. 
 
 ------------------------
 
 ## Folder [premigrate](/premigrate) - Premigrate policies and scripts
 
-Purpose: This folder contains script and policies to perform premigrates using migrate 
-policies. It provides an interface script that wraps perform pre-migration instead of 
-migration. It contains an interface script for Spectrum Archive (LTFS EE). TSM HSM will be 
-added later. 
+This folder contains script and policies to perform premigrates using migrate policies. It provides an interface script that wraps perform pre-migration instead of migration. It contains an interface script for Spectrum Archive.  
 
 ------------------------
 
 ## Folder [quota-migration](/quota-migration) - Automated migration based on Quota 
 
-Purpose: This folder contains a callback script and policies facilitating migration of a fileset to be triggered when the quota consumption reaches a certain threshold. The callback script (callback-quota.sh) is invoked when the GPFS event softQuotaExceeded is triggered. This script invokes a list policy to list files in the fileset that qualify for migration based on the quota limits and a migration policy that migrates the files identified by the list policy. 
+This folder contains a callback script and policies facilitating migration of a fileset to be triggered when the quota consumption reaches a certain threshold. The callback script (`callback-quota.sh`) is invoked when the event `softQuotaExceeded` is triggered. This script invokes an EXTERNAL LIST policy to list files in the fileset that qualify for migration based on the quota limits and a migration policy that migrates the files identified by the list policy. 
 
 ------------------------
 
 ## Folder [Recall](recall/)
 
-Purpose: This folder contains script and policies to drive tape optimized recalls
-with TSM HSM or Spectrum Archive (LTFS EE). The scripts are customized interface 
-scripts that perform recall instead of migration. 
+This folder contains script and policies for tape optimized recalls with Spectrum Protect for Space Management and Spectrum Archive Enterprise Edition . The scripts are customized interface scripts that perform recall instead of migration. 
 
 ------------------------
 
 ## Folder [receiver](receiver/) - external script invoked by EXTERNAL LIST policy
 
-Purpose: List policies can be used to list files based on rules and give the
-list of files to an external pool script. The external pool script can then
-process the files according to the needs. This script is an external pool script
-that receives the input from a list policy and prints all the file names in an
-output file. Of course you can add other operations.
+This folder includes an interface script that receives file lists from an EXTERNAL LIST policies and processes the files contained in the file list. The processing in this script extracts the file names contained in the file list and writes these file names to an extra file. Of course you can add other operations for the files. 
 
 ------------------------
 
 ## Folder [runpolicy](runpolicy/) - wrapper for mmapplypolicy
 
-Purpose: runpolicy is a wrapper for mmapplypolicy that runs a policy provided as
-input file for a file system or directory provided as input. It also passes
-arguments to the policy itself such as the FILESYSTEM and EEPOOL. For more details
-about its usage see runpolicy.readme. 
+This folder contains a wrapper script for the `mmapplypolicy` command. It is invoked in a simplified way and allows either pass further options for the `mmapplypolicy` commmand or encode these options in an internal variable. 
 
+------------------------
+
+## Folder [sample-policies](sample-policies/) - sample ILM policies
+
+This folder includes sample policies for migration, recall and list. 
 
 
