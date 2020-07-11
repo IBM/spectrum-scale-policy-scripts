@@ -48,7 +48,7 @@ In folder [sample-policies](../sample-policies/) you can find some useful sample
 - Policy [migrate-all.txt](../sample-policies/migrate-all.txt) migrates all files that are not migrated, including pre-migrated files. To run the policy:
 
 
-		runpolicy.sh path migrate-all.txt -M EEPOOL=pool1@lib1 [opts]
+	runpolicy.sh path migrate-all.txt -M EEPOOL=pool1@lib1 [opts]
 
   
    The parameter `-M EEPOOL=pool1@lib1` denotes the destination pool for the migration and must be an existing pool in the Spectrum Archive EE system. Additional options for the policy engine should be configured. These options are passed to the `mmapplypolicy` command should include: `-B bucketsize -m threads -N nodenames --single-instance`. These options can either be encoded in the command line parameter `opts`, or these options can be encoded in the script variable `DEFAULT_OPTS`.
@@ -57,7 +57,7 @@ In folder [sample-policies](../sample-policies/) you can find some useful sample
 - Policy [migrate-fset.txt](../sample-policies/migrate-fset.txt) migrates all files for a particular fileset that are not migrated, including pre-migrated files. To run the policy:
 
 	
-		runpolicy.sh path migrate-fset.txt -M EEPOOL=pool1@lib1 -M FSET=filesetname [opts]
+	runpolicy.sh path migrate-fset.txt -M EEPOOL=pool1@lib1 -M FSET=filesetname [opts]
 
   
    The parameter `-M EEPOOL=pool1@lib1` denotes the destination pool for the migration and must be an existing pool in the Spectrum Archive EE system. The parameter `-M FSET=filesetname` denotes the fileset name subject for migration. Additional options for the policy engine should be configured. These options are passed to the `mmapplypolicy` command should include: `-B bucketsize -m threads -N nodenames --single-instance`. These options can either be encoded in the command line parameter `opts`, or these options can be encoded in the script variable `DEFAULT_OPTS`.
