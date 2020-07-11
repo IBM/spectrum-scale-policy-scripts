@@ -1,5 +1,5 @@
 
-Copyright 2019 Nils Haustein, released under the [MIT license](LICENSE)
+Copyright 2020 Nils Haustein, released under the [MIT license](LICENSE)
 
 This project includes scripts and policies for the Spectrum ILM:
 
