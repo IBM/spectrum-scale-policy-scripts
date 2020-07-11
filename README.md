@@ -1,7 +1,7 @@
 
 Copyright 2020 Nils Haustein, released under the [MIT license](LICENSE)
 
-This project includes scripts and policies for the Spectrum ILM:
+This project includes scripts and policies for IBM Spectrum Scale ILM in combination with IBM Spectrum Archive Enterprise Edition and IBM Spectrum Protect for Space Management:
 
 ## Folder [immutable](immutable/) - Script to set files to immutable
 
