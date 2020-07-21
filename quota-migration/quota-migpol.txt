@@ -1,0 +1,22 @@
+/* runs a migrate policy that migrates files for a particular fileset that are not yet migrated */
+
+/* define exclude rule*/
+RULE 'exclude' EXCLUDE WHERE 
+  (PATH_NAME LIKE '%/.SpaceMan/%' OR
+   PATH_NAME LIKE '%/.ltfsee/%' OR 	
+   PATH_NAME LIKE '%/.mmSharedTmpDir/%' OR
+   PATH_NAME LIKE '%/.snapshots/%' OR
+   NAME LIKE '.mmbackupShadow%' OR
+   NAME LIKE 'mmbackup%')
+
+/* define macro for files that allocate more than 0 KB  */
+define(is_empty,(KB_ALLOCATED=0))
+
+/* define external pool, the name of the tape pool is provided via EEPOOL  */
+RULE 'extpool' EXTERNAL POOL 'ltfs' EXEC '/opt/ibm/ltfsee/bin/eeadm' 		
+OPTS 'EEPOOL' 
+SIZE 10485760							
+
+/* define migration to ltfs pool for the fileset specified by FSETNAME*/
+RULE 'quotaMig' MIGRATE FROM POOL 'system' TO POOL 'ltfs' FOR FILESET ('FSETNAME') 
+WHERE NOT (is_empty)
