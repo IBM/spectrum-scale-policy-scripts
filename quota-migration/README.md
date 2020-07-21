@@ -20,7 +20,7 @@ To migrate files pertaining to a particular fileset of a Spectrum Scale file sys
 4.	Last but not least, the Spectrum Scale callback is defined that receives the event `softQuotaExceeded` and runs the callback script `callback-quota.sh`passing on certain parameters including the file system and fileset name that triggered this even Quota callback. 
  
  
-** Note: **
+* Note: *
 The event `softQuotaExceeded` is triggered on the file system manager. Any node with a manager role in the cluster can become file system manager. Therefore all components explained above have to be installed on all nodes with manager role. 
 
 
@@ -44,6 +44,8 @@ Copy the `callback-quota.sh` script and the two policy files (`quota-listpol.txt
 
 
 Adjust configurable parameters in the `callback-quota.sh` script:
+
+
 | Parameter | Description |
 | ----------|-------------|
 | workDir | define the working directory where output files of the policy runs are stored. It may also be used to define the path names of the policy files. This directory must exist.  |
