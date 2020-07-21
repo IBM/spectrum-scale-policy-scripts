@@ -1,0 +1,23 @@
+/* runs a list policy that identifies files if soft quota limit is met. Files are selected for a fileset and based on access time with the oldest files first */
+
+/* exclude list */
+define(  exclude_list,
+  (PATH_NAME LIKE '%/.SpaceMan/%' OR 		
+   PATH_NAME LIKE '%/.ltfsee/%' OR 			
+   PATH_NAME LIKE '%/.mmSharedTmpDir/%' OR	
+   PATH_NAME LIKE '%/.snapshots/%' OR 		
+   NAME LIKE '.mmbackupShadow%' OR 			
+   NAME LIKE 'mmbackup%')					
+) 
+
+/* define macro for files that allocate more than 0 KB  */
+define(is_empty, (KB_ALLOCATED=0))
+
+/* define macro for access age */
+define(access_age,(DAYS(CURRENT_TIMESTAMP) - DAYS(ACCESS_TIME)))
+
+/* check softquota against threshold and select files */
+RULE EXTERNAL LIST 'softquota' THRESHOLD 'FILESET_QUOTA_SOFT'
+
+/* identify files exceeeding the THRESHOLD in the given fileset stored on system pool that are not empty and that are not in exclude list */
+RULE 'quotalist' LIST 'softquota' FROM POOL 'system' THRESHOLD(90,80) WEIGHT(access_age) FOR FILESET ('FSETNAME') WHERE NOT (is_empty) and NOT (exclude_list)
