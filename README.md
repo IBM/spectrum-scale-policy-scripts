@@ -1,7 +1,7 @@
 
 Copyright 2020 Nils Haustein, released under the [MIT license](LICENSE)
 
-This project includes scripts and policies for IBM Spectrum Scale ILM in combination with IBM Spectrum Archive Enterprise Edition and IBM Spectrum Protect for Space Management:
+This project includes scripts and policies for IBM Spectrum Scale ILM in combination with IBM Spectrum Archive Enterprise Edition and IBM Spectrum Protect for Space Management. For more inforemation refer to the [IBM Spectrum Scale ILM policy whitepaper](https://www-03.ibm.com/support/techdocs/atsmastr.nsf/WebIndex/WP102642). 
 
 ## Folder [immutable](immutable/) - Script to set files to immutable
 
@@ -23,7 +23,7 @@ This folder contains script and policies to perform premigrates using migrate po
 
 ## Folder [quota-migration](/quota-migration) - Automated migration based on Quota 
 
-This folder contains a callback script and policies facilitating migration of a fileset to be triggered when the quota consumption reaches a certain threshold. The callback script (`callback-quota.sh`) is invoked when the event `softQuotaExceeded` is triggered. This script invokes an EXTERNAL LIST policy to list files in the fileset that qualify for migration based on the quota limits and a migration policy that migrates the files identified by the list policy. 
+This folder contains a callback script and policies facilitating migration of files for filesets where the soft quota limit has been reached. The callback script (`callback-quota.sh`) is invoked when the event `softQuotaExceeded` is triggered. This script invokes an EXTERNAL LIST policy to identify files in the fileset that qualify for migration based on the quota limits and a migration policy that migrates the files identified by the list policy to IBM Spectrum Archive EE. 
 
 ------------------------
 
