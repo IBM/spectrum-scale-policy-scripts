@@ -27,7 +27,7 @@ This folder contains a callback script and policies facilitating migration of fi
 
 ------------------------
 
-## Folder [Recall](recall/) - wrappper script for tape optimized recalls
+## Folder [Recall](recall/) - wrapper script for tape optimized recalls
 
 This folder contains script and policies for tape optimized recalls with Spectrum Protect for Space Management and Spectrum Archive Enterprise Edition . The scripts are customized interface scripts that perform recall instead of migration. 
 
