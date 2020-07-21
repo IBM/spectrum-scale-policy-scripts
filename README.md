@@ -21,13 +21,13 @@ This folder contains script and policies to perform premigrates using migrate po
 
 ------------------------
 
-## Folder [quota-migration](/quota-migration) - Automated migration based on Quota 
+## Folder [quota-migration](/quota-migration) - migration when quota limits have reached 
 
-This folder contains a callback script and policies facilitating migration of files for filesets where the soft quota limit has been reached. The callback script (`callback-quota.sh`) is invoked when the event `softQuotaExceeded` is triggered. This script invokes an EXTERNAL LIST policy to identify files in the fileset that qualify for migration based on the quota limits and a migration policy that migrates the files identified by the list policy to IBM Spectrum Archive EE. 
+This folder contains a callback script and policies facilitating migration of files for filesets where the soft quota limit has been reached. The callback script (`callback-quota.sh`) is invoked when the event `softQuotaExceeded` is triggered for a fileset. This script invokes an EXTERNAL LIST policy to identify files in the fileset that qualify for migration based on the quota limits and a migration policy that migrates the files identified by the list policy to IBM Spectrum Archive EE. 
 
 ------------------------
 
-## Folder [Recall](recall/)
+## Folder [Recall](recall/) - wrappper script for tape optimized recalls
 
 This folder contains script and policies for tape optimized recalls with Spectrum Protect for Space Management and Spectrum Archive Enterprise Edition . The scripts are customized interface scripts that perform recall instead of migration. 
 
