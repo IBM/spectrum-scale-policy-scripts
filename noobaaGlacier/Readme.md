@@ -136,11 +136,11 @@ Once the migration policy was adjusted, it can be executed by the policy engine 
 
 The following parameters for the `mmapplypolicy` command must be considered:
 
-`path-or-device`	Path name of file system name. For example: `/ibm/fs1`
-`-m threads`		Number of parallel threads per node. This should be equivalent to the number of drives per node minus 1. 
-`-N nodes`			Names of the Storage Archive nodes. 
-`-B bucket-size`	Number of files to be migrated by one migrate operation. Depends on file size. A good value may be between 1000 and 20000.
-`--single-instance` Ensures that not more than one instance of this policy is executed at a time.  
+- `path-or-device`	Path name of file system name. For example: `/ibm/fs1`
+- `-m threads`		Number of parallel threads per node. This should be equivalent to the number of drives per node minus 1. 
+- `-N nodes`			Names of the Storage Archive nodes. 
+- `-B bucket-size`	Number of files to be migrated by one migrate operation. Depends on file size. A good value may be between 1000 and 20000.
+- `--single-instance` Ensures that not more than one instance of this policy is executed at a time.  
 
 
 The execution of the migration policy may be scheduled to run 1 - 2 times a day, depending on the requirements. 
