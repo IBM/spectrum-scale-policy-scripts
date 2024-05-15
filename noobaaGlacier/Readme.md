@@ -191,11 +191,11 @@ Once the recall policy and script was adjusted, it can be executed by the policy
 
 The following parameters for the `mmapplypolicy` command must be considered:
 
-`path-or-device`	Path name of file system name. For example: `/ibm/fs1`
-`-m threads`		Number of parallel threads per node. This should be equivalent to the number of drives per node minus 1. 
-`-N nodes`			Names of the Storage Archive nodes. 
-`-B bucket-size`	Number of files to be migrated by one migrate operation. Depends on file size. A good value may be between 1000 and 20000. 
-`--single-instance` Ensures that not more than one instance of this policy is executed at a time.  
+- `path-or-device`	Path name of file system name. For example: `/ibm/fs1`
+- `-m threads`		Number of parallel threads per node. This should be equivalent to the number of drives per node minus 1. 
+- `-N nodes`			Names of the Storage Archive nodes. 
+- `-B bucket-size`	Number of files to be migrated by one migrate operation. Depends on file size. A good value may be between 1000 and 20000. 
+- `--single-instance` Ensures that not more than one instance of this policy is executed at a time.  
 
 
 The schedule for the execution of the recall policy depends on the service level specifying the time period a S3 user must wait for the object to be retrievable after the user issued the Restore-Object request. Depending of the number of files in the file system and filesets, realistic time periods for retrieval may be 4 - 8 hours. If the time period for the retrieval is 4 hours, than the recall policy should be executed every 3 hours to give it some lead time for recalls. 
@@ -256,11 +256,11 @@ Once the set-attributes policy and script was adjusted, it can be executed by th
 
 The following parameters for the `mmapplypolicy` command must be considered:
 
-`path-or-device`	Path name of file system name. For example: `/ibm/fs1`
-`-m threads`		Number of parallel threads per node. This should be equivalent to the number of drives per node minus 1. 
-`-N nodes`			Names of nodes that execute the policy and the script. This is **not** limited the Storage Archive nodes. 
-`-B bucket-size`	Number of files to be migrated by one migrate operation. Depends on file size. A good value may be between 1000 and 20000. 
-`--single-instance` Ensures that not more than one instance of this policy is executed at a time.  
+- `path-or-device`	Path name of file system name. For example: `/ibm/fs1`
+- `-m threads`		Number of parallel threads per node. This should be equivalent to the number of drives per node minus 1. 
+- `-N nodes`			Names of nodes that execute the policy and the script. This is **not** limited the Storage Archive nodes. 
+- `-B bucket-size`	Number of files to be migrated by one migrate operation. Depends on file size. A good value may be between 1000 and 20000. 
+- `--single-instance` Ensures that not more than one instance of this policy is executed at a time.  
 
 
 The schedule for the execution of the set-attribute policy depends on the schedule of the recall policy. The set-attribute policy must be executed right after the recall to assure that files get the right attributes set and can be retrieved by the S3 user. 
