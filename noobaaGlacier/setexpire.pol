@@ -1,0 +1,29 @@
+/* exclude list */
+define(  exclude_list,
+  (PATH_NAME LIKE '%/.SpaceMan/%' OR
+   PATH_NAME LIKE '%/.ltfsee/%' OR
+   PATH_NAME LIKE '%/.mmSharedTmpDir/%' OR
+   PATH_NAME LIKE '%.mmbackupCfg/%' OR
+   PATH_NAME LIKE '%/.snapshots/%' OR
+   NAME LIKE '.mmbackupShadow%' OR
+   NAME LIKE 'mmbackup%')
+)
+
+/* define is_migrated */
+define(is_migrated, (MISC_ATTRIBUTES LIKE '%V%'))
+
+/* list files with restore request that are not migrated and invoke setExpire script to set user.noobaa.restore.expiry and remove user.noobaa.restore.request */
+RULE 'extlist' EXTERNAL LIST 'setExpiry' EXEC '/path-to/setExpire.sh'
+RULE 'listFiles' LIST 'setExpiry' FOR FILESET('buckets') WHERE
+  NOT (exclude_list) AND
+  xattr('user.storage_class') = 'GLACIER' AND
+  NOT (is_migrated) AND
+  xattr('user.noobaa.restore.request') IS NOT NULL 
+
+/*Invokation:
+# mmapplypolicy [path-or-device] -P setexpire.pol -m [num] -N [nodes] -B [bucket-size] --single-instance
+-m number of parallel threads per node
+-N nodes exuting the policy
+-B bucket-size per thread, between 1000 and 20000
+*/
+
