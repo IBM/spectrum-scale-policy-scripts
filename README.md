@@ -1,5 +1,5 @@
 
-Copyright 2020 Nils Haustein, released under the [MIT license](LICENSE)
+Copyright 2024 Nils Haustein, released under the [MIT license](LICENSE)
 
 This project includes scripts and policies for IBM Spectrum Scale ILM in combination with IBM Spectrum Archive Enterprise Edition and IBM Spectrum Protect for Space Management. For more inforemation refer to the [IBM Spectrum Scale ILM policy whitepaper](https://www-03.ibm.com/support/techdocs/atsmastr.nsf/WebIndex/WP102642). 
 
@@ -12,6 +12,18 @@ This folder contains a script and policies to identify files that are not immuta
 ## Folder [list](list/) - List policy script
 
 This folder contains a wrapper script for LIST policies. The main purpose is to list the numbers and optionally the file names of file in accordance to their migration state. This wrapper script can be dynamically extended to use other list policies. 
+
+------------------------
+
+## Folder [noobaaGlacier](noobaaGlacier/) - policies and scripts for NooBaa Glacier
+
+This folder contains policies and scripts allowing to automatically manage migration and recalls of S3 GLACIER objects ingested through NooBaa endpoints in IBM Storage Scale file systems. 
+
+The policy in `migrate.pol` facilitates the migration of objects from the Storage Scale file system to tape. 
+
+The policy `recall.pol` facilitates the recall of objects from tape. It is implemented as EXTERNAL LIST policy that invokes the external script `recallGlacier.sh`) to accommodate the recall of the selected files. 
+
+The policy `setexpire.pol` facilitates setting the user.noobaa attributes. It is implemented as EXTERNAL LIST policy that invokes the external script `setExpire.sh` to accommodate setting the attributes of the selected files. 
 
 ------------------------
 
