@@ -72,7 +72,7 @@ scriptPath="/usr/local/bin"
 recPol="$scriptPath/recall.pol"
 
 # set attribute policy file name
-attrPol="$scriptPath/setattr.pol"
+setAttrPol="$scriptPath/setattr.pol"
 
 # path and file name for the recall script
 recallProg="$scriptPath/recall.sh"
@@ -128,7 +128,7 @@ echo -e "=======================================================================
 sleep 5
 
 echo "INFO: Starting setting object restore attribute on nodes $nodes for fileset $fSet "
-$gpfsPath/mmapplypolicy $s3Path -P $attrPol --single-instance -M FSET=$fSet -M BUCKET=$bucketPath -M PROG=$setAttrProg -N $nodes
+$gpfsPath/mmapplypolicy $s3Path -P $setAttrPol --single-instance -M FSET=$fSet -M BUCKET=$bucketPath -M PROG=$setAttrProg -N $nodes
 (( rc=rc+$? ))
 
 
