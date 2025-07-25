@@ -1,7 +1,9 @@
 
 Copyright 2024 Nils Haustein, released under the [MIT license](LICENSE)
 
-This project includes scripts and policies for IBM Spectrum Scale ILM in combination with IBM Spectrum Archive Enterprise Edition and IBM Spectrum Protect for Space Management. For more inforemation refer to the [IBM Spectrum Scale ILM policy whitepaper](https://www-03.ibm.com/support/techdocs/atsmastr.nsf/WebIndex/WP102642). 
+This repository includes scripts and policies for IBM Spectrum Scale ILM in combination with IBM Spectrum Archive Enterprise Edition and IBM Spectrum Protect for Space Management. For more inforemation refer to the [IBM Spectrum Scale ILM policy whitepaper](https://www-03.ibm.com/support/techdocs/atsmastr.nsf/WebIndex/WP102642). 
+
+-----------------------
 
 ## Folder [immutable](immutable/) - Script to set files to immutable
 
@@ -57,8 +59,17 @@ This folder contains a wrapper script for the `mmapplypolicy` command. It is inv
 
 ------------------------
 
+## Folder [s3-glacier-automation](s3-glacier-automation/) - S3 Glacier migration and restore 
+
+This folder includes scripts and associated policy files for managing migration and restore of S3 Glacier objects. 
+
+------------------------
+
 ## Folder [sample-policies](sample-policies/) - sample ILM policies
 
 This folder includes sample policies for migration, recall and list. 
 
+
+
+END OF DOCUMENT
 
