@@ -108,7 +108,7 @@ The [migration script](mig-glacier.sh) has a section at the beginning where diff
 | fSet | Fileset name of the base path, if the base path is a fileset. If not leave this blank (""). | yes | demo |
 | bucket | Name of the bucket to be migrated. If the name is blank `("")` then all objects stored in base path `s3Path` are migrated. This is appropriate if there there multiple buckets in the base path | yes  | glacier |
 | scriptPath | Path where the script and policies of this project are stored | yes | /usr/local/bin |
-| polFile | Path and filename of the migrate policy `migrate.pol` | yes | /usr/local/bin/migrate.pol |
+| polFile | Path and filename of the migrate policy `migrate.pol` | yes | migrate.pol |
 | tapePool | Name of the Storage Archive tape pool | yes | pool1@lib1 |
 | nodes | Node names that execute the policy. When set to `""`, then it defaults to the local nodes. Multiple nodes are provide as `node1,node2`. When multiple nodes are specified, then the policies and scripts must be installed on all nodes in the same directory | no | node1 |
 | tFlag | Optional flag for the policy engine. Default is that the policy is executed. If `tFlag="-I test"` then the migrate policy is not executed but tested. Useful for debugging. Default is `-I yes` | no | -I test |
@@ -154,10 +154,10 @@ The [restore script](rest-glacier.sh) has a section at the beginning where diffe
 | fSet | Fileset name of the base path, if the base path is a fileset. If not leave this blank (""). | yes | demo |
 | bucket | Name of the bucket to be process for recalls. If the name is blank `("")` then all objects stored in base path `s3Path` are considered for recall. This is appropriate if there there multiple buckets in the base path | yes  | glacier |
 | scriptPath | Path where the script and policies of this project are stored | yes | /usr/local/bin |
-| recPol | Path and filename of the recall policy file `recall.pol` | yes | /usr/local/bin/recall.pol |
-| attrPol | Path and filename of the set attribute policy file `setattr.pol` | yes | /usr/local/bin/setattr.pol |
-| recallProc | Path and filename of the recall script `recall.sh` | yes | /usr/local/bin/recall.sh |
-| setAttrProc | Path and filename of the set attribute script `setattr.sh` | yes | /usr/local/bin/setattr.sh |
+| recallProc | Path and filename of the recall script `recall.sh` | yes | recall.sh |
+| recPol | Path and filename of the recall policy file `recall.pol` | yes | recall.pol |
+| setAttrProc | Path and filename of the set attribute script `setattr.sh` | yes | setattr.sh |
+| setAttrPol | Path and filename of the set attribute policy file `setattr.pol` | yes | setattr.pol |
 | nodes | Node names that execute the policy. When set to `""`, then it defaults to the local nodes. Multiple nodes are provide as `node1,node2`. When multiple nodes are specified, then the policies and scripts must be installed on all nodes in the same directory | no | node1 |
 
 After the parameters are defined, the restore script can be executed like this:
@@ -179,6 +179,7 @@ If the buckets are not in the same base path, then create multiple versions of t
 
 
 The recall of Glacier objects that were identified by the recall policy is executed by all Storage Archive nodes, depending on the amount and size of objects to be recalled. If there are multiple Storage Archive nodes that should execute the recall policy, then install the scripts and policies on all Storage Archive nodes in the same path and set the parameter `nodes` in the `mig-glacier.sh` script accordingly. Running the policy distributed on multiple nodes may speed up the policy scan.
+
 
 -------------------
 END OF DOCUMENT
