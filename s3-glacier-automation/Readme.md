@@ -26,10 +26,10 @@ The following files are included in this projects:
 | mig-glacier.sh  | Script to migrate S3 glacier objects |
 | migrate.pol  | Migrate policy executed by `mig-glacier.sh` |
 | rest-glacier.sh | Script to restore S3 Glacier objects | 
-| recall.pol | External List policy that recalls objects using the interface script `recall.sh` |
-| recall.sh | Interface script invoked by the recall policy `recall.pol` |
-| setattr.pol | External List policy that sets attributes for recalled objects using the interface script `setattr.sh` |
-| setattr.sh | Interface script invoked by the set attribute policy `setattr.pol` |
+| recall.pol | External List policy executed by `rest-glacier.sh` that recalls objects using the interface script `recall.sh`. |
+| recall.sh | Interface script invoked by the recall policy `recall.pol` in `rest-glacier.sh` |
+| setattr.pol | External List policy executed by `rest-glacier.sh`  that sets attributes for recalled objects using the interface script `setattr.sh` |
+| setattr.sh | Interface script invoked by the set attribute policy `setattr.pol` in `rest-glacier.sh`  |
 
 
 The scripts and policies included in this project must be installed on at least one Storage Archive nodes. If there is more than one Storage Archive nodes in the cluster, then all Storage Archive could be used to execute the policies. In this case install the scripts and policies on all Storage Archive nodes in the same path (e.g., `/usr/local/bin`)
