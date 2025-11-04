@@ -21,11 +21,9 @@ This folder contains a wrapper script for LIST policies. The main purpose is to 
 
 This folder contains policies and scripts allowing to automatically manage migration and recalls of S3 GLACIER objects ingested through NooBaa endpoints in IBM Storage Scale file systems. 
 
-The policy in `migrate.pol` facilitates the migration of objects from the Storage Scale file system to tape. 
+The policies and scripts in this folder are associated with the series of blog article [Noobaa on Scale](https://community.ibm.com/community/user/storage/blogs/nils-haustein1/2024/02/21/s3-tiering-to-tape-with-noobaa-part-1-introduction)
 
-The policy `recall.pol` facilitates the recall of objects from tape. It is implemented as EXTERNAL LIST policy that invokes the external script `recallGlacier.sh`) to accommodate the recall of the selected files. 
-
-The policy `setexpire.pol` facilitates setting the user.noobaa attributes. It is implemented as EXTERNAL LIST policy that invokes the external script `setExpire.sh` to accommodate setting the attributes of the selected files. 
+For policies and scripts managing S3 GLACIER with Storage Scale S3 service refer to folder [Storage Scale S3 Glacier automation](s3-glacier-automation/).
 
 ------------------------
 
@@ -61,7 +59,7 @@ This folder contains a wrapper script for the `mmapplypolicy` command. It is inv
 
 ## Folder [s3-glacier-automation](s3-glacier-automation/) - S3 Glacier migration and restore 
 
-This folder includes scripts and associated policy files for managing migration and restore of S3 Glacier objects. 
+This folder includes scripts and associated policy files for managing migration and restore of S3 Glacier objects in IBM Storage Scale S3 service. 
 
 ------------------------
 
