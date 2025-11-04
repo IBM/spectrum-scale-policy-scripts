@@ -34,9 +34,11 @@
 # - optional argument -s <workDir> allows to set the working directory for the policy engine output files
 #
 
-# ADJUST define pathname and prefix for policy files
-# policy file must be named: $pfPrefix_$op.txt
-pfPrefix="./listpol"
+#=================================================================
+# Globale parameters
+#=================================================================
+# policy file must be named: $pfPrefix_$op.txt and it must be co-located with the script
+pfPrefix="listpol"
 
 # define local work directory for mmapplypolicy and output files, default is /tmp
 workDir="/tmp"
@@ -51,7 +53,9 @@ numbersOnly=1
 gpfsPath="/usr/lpp/mmfs/bin"
 
 
-#function syntax
+#=================================================================
+# Functions
+#=================================================================
 function syntax 
 {
   echo 
@@ -67,6 +71,11 @@ function syntax
   echo "    -s workDir: specify the working directory for the policy engine output files (default is $workDir)"
   echo 
 }
+
+
+#=================================================================
+# Main
+#=================================================================
 
 #check first argument to be state
 if [[ -z "$1" ]]; 
@@ -124,9 +133,14 @@ ofPrefix="$workDir""/gpfs"
 #define logfile name
 logfile="$workDir""/gpfslist_mmapply.log"
 
+#set the path for the script and policy files
+basePath=$(dirname $0)
+if [[ $basePath = "." ]]; then
+  basePath=$PWD
+fi
 
 #check if policy file exists
-polfile="$pfPrefix""_""$op"".txt"
+polfile="$basePath/""$pfPrefix""_""$op"".txt"
 # echo "DEBUG: policy file name is: $polfile"
 if [[ ! -a $polfile ]];
 then
