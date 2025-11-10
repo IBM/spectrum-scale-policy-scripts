@@ -66,6 +66,16 @@ cd /usr/local/bin
 Configure and test the scripts using instructions in section [Workflows](#Workflows)
 
 
+## Enable S3 Glacier
+
+To enable S3 Glacier in Storage Scale S3 server perform the following command as adminstrative user. This command will restart the S3 service:
+
+```
+# mms3 config change NSFS_GLACIER_ENABLED=true
+```
+
+**Note:** The S3 Glacier function is not officially supported. Refer to this IDEA for more information [Allow S3 Glacier in Storage Scale](https://ideas.ibm.com/ideas/SPA-I-38/)
+
 
 # Workflows
 
