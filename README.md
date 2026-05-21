@@ -1,7 +1,7 @@
 
-Copyright 2024 Nils Haustein, released under the [MIT license](LICENSE)
+Copyright 2026 Nils Haustein, released under [Apache License 2.0](LICENSE)
 
-This repository includes scripts and policies for IBM Spectrum Scale ILM in combination with IBM Spectrum Archive Enterprise Edition and IBM Spectrum Protect for Space Management. For more inforemation refer to the [IBM Spectrum Scale ILM policy whitepaper](https://www-03.ibm.com/support/techdocs/atsmastr.nsf/WebIndex/WP102642). 
+This repository includes scripts and policies for IBM Storage Scale ILM in combination with IBM Storage Archive Enterprise Edition and IBM Storage Protect for Space Management. For more inforemation refer to the [IBM Storage Scale ILM policy Redbook](https://www.redbooks.ibm.com/abstracts/redp5739.html). 
 
 -----------------------
 
@@ -29,19 +29,19 @@ For policies and scripts managing S3 GLACIER with Storage Scale S3 service refer
 
 ## Folder [premigrate](/premigrate) - Premigrate policies and scripts
 
-This folder contains script and policies to perform premigrates using migrate policies. It provides an interface script that wraps perform pre-migration instead of migration. It contains an interface script for Spectrum Archive.  
+This folder contains script and policies to perform premigrates using migrate policies. It provides an interface script that wraps perform pre-migration instead of migration. It contains an interface script for Storage Archive.  
 
 ------------------------
 
 ## Folder [quota-migration](/quota-migration) - migration when quota limits have reached 
 
-This folder contains a callback script and policies facilitating migration of files for filesets where the soft quota limit has been reached. The callback script (`callback-quota.sh`) is invoked when the event `softQuotaExceeded` is triggered for a fileset. This script invokes an EXTERNAL LIST policy to identify files in the fileset that qualify for migration based on the quota limits and a migration policy that migrates the files identified by the list policy to IBM Spectrum Archive EE. 
+This folder contains a callback script and policies facilitating migration of files for filesets where the soft quota limit has been reached. The callback script (`callback-quota.sh`) is invoked when the event `softQuotaExceeded` is triggered for a fileset. This script invokes an EXTERNAL LIST policy to identify files in the fileset that qualify for migration based on the quota limits and a migration policy that migrates the files identified by the list policy to IBM Storage Archive EE. 
 
 ------------------------
 
 ## Folder [Recall](recall/) - wrapper script for tape optimized recalls
 
-This folder contains script and policies for tape optimized recalls with Spectrum Protect for Space Management and Spectrum Archive Enterprise Edition . The scripts are customized interface scripts that perform recall instead of migration. 
+This folder contains script and policies for tape optimized recalls with Storage Protect for Space Management and Storage Archive Enterprise Edition . The scripts are customized interface scripts that perform recall instead of migration. 
 
 ------------------------
 
@@ -68,6 +68,7 @@ This folder includes scripts and associated policy files for managing migration 
 This folder includes sample policies for migration, recall and list. 
 
 
-
+----------------------
 END OF DOCUMENT
+----------------------
 
