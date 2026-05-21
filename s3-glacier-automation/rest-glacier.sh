@@ -1,26 +1,9 @@
 #!/bin/bash
 ################################################################################
-# The MIT License (MIT)                                                        #
-#                                                                              #
-# Copyright (c) 2025 Nils Haustein                             				   #
-#                                                                              #
-# Permission is hereby granted, free of charge, to any person obtaining a copy #
-# of this software and associated documentation files (the "Software"), to deal#
-# in the Software without restriction, including without limitation the rights #
-# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell    #
-# copies of the Software, and to permit persons to whom the Software is        #
-# furnished to do so, subject to the following conditions:                     #
-#                                                                              #
-# The above copyright notice and this permission notice shall be included in   #
-# all copies or substantial portions of the Software.                          #
-#                                                                              #
-# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR   #
-# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,     #
-# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE  #
-# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER       #
-# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,#
-# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE#
-# SOFTWARE.                                                                    #
+# IBM Storage Scale
+#
+# (C) Copyright International Business Machines Corp. 2026
+#
 ################################################################################
 #
 # Program: rest-glacier.sh
@@ -33,7 +16,7 @@
 #    and set the file attributes using an EXTERNAL LIST policy setattr.pol that invokes the external script setattr.sh
 # 
 # Input:
-# Parameters at the beginning of this scripts must be adjusted.
+# Sourced from funcs-glacier.sh
 #
 # Processing:
 # Executes the recall.pol policy and subsequently executes the setattr.pol policy
@@ -44,74 +27,59 @@
 #------------------------------------------------------------------------
 # Change History
 # 23.7.25 first implementation 
+# 05/19/26 moved global paramters to funcs-glacier.sh
 
 
-#------------------------------------------
-# static parameters - do not change
-#------------------------------------------
-# GPFS bin path
-gpfsPath="/usr/lpp/mmfs/bin"
-
-#------------------------------------------
-# The following parameters must be adjusted
-#-----------------------------------------
-# base path where buckets and objects are stored
-s3Path="/ibm/fs1/demo"
-
-# fileset name when available, fileset path should correspond to s3Path. Leave blank if there is no fileset.
-fSet="demo"
-
-# bucket name
-# when bucket is specified, then we scan the bucket only otherwise we scan the entire base object path ($s3Path)
-bucket="glacier"
-
-# path where the scripts and policies are located:
-scriptPath="/usr/local/bin"
-
-# recall policy file name
-recPol="$scriptPath/recall.pol"
-
-# set attribute policy file name
-setAttrPol="$scriptPath/setattr.pol"
-
-# path and file name for the recall script
-recallProg="$scriptPath/recall.sh"
-
-# path and file name for the set attribute script
-setAttrProg="$scriptPath/setattr.sh"
-
-# node names that can execute the policy, these nodes must have the scripts installed
-#   when "" then the local node is used
-#   multiple nodes are separated with comma and no blanks, e.g., node1,node2
-#   all refers to all nodes
-nodes=""
-
+funcFile="funcs-glacier.sh"
 
 #----------------------------------
 # Main
 #---------------------------------
 
-# Set optional parameters
-# if there is no fileset, then use root as fileset name
-if [[ -z $fSet ]]; then
-  fSet="root"
+### determine directory where the script is started from
+basePath=$(dirname $0)
+if [[ $basePath = "." ]]; then
+  basePath=$PWD
 fi
+# echo "DEBUG: base path for $0: $basePath"
 
-# if there is no node name, then set it to the local node
-if [[ -z $nodes ]]; then
-  nodes=$($gpfsPath/mmlsnode -N localhost | awk '{print $1}' )
-fi
-
-# if a bucket is specified, then add the bucket name to the base object path
-if [[ -z $bucket ]]; then
-  bucketPath=$s3Path
+### source common functions
+if [[ -a $basePath/$funcFile ]]; then
+  . $basePath/$funcFile
 else
-  bucketPath=$s3Path/$bucket
+  echo "  ERROR: common functions in file $funcFile not found in $basePath."
+  exit 1 
 fi
 
+### check parameters 
+echo "INFO: Checking configuration parameters."
+if ! check_config; then
+  exit 2
+fi
 
-echo "$(date) Invoking Glacier restore on nodes $nodes for fileset $fSet"
+### further checks on restore specific parameters
+# check that recall and setAttr policy and programs exist in $basePath
+for f in $recPol $recallProg $setAttrPol $setAttrProg; do
+  if [[ ! -z $f ]]; then
+    if [[ ! -a $f ]]; then
+    echo "  ERROR: File $f does not exist."
+    exit 2
+  fi
+  else
+    echo "  ERROR: parameter $f is not defined in $funcFile."
+    exit 2
+  fi
+done
 
+### adjust the policy: if not fileset is given, then remove the FOR FILESET clause
+if [[ $fSet == "root" ]]; then
+  fsetClause=""
+else
+  fsetClause="FOR FILESET('$fSet')"
+fi
+
+### start the recall
+echo "$(date) Invoking Glacier restore on nodes $nodes for fileset $fSet and bucket $bucket"
 
 # if there is no fileset, then use root as fileset name
 if [[ -z $fSet ]]; then
@@ -119,19 +87,23 @@ if [[ -z $fSet ]]; then
 fi
 
 echo "INFO: Starting recall for $s3Path"
-$gpfsPath/mmapplypolicy $s3Path -P $recPol --single-instance -M FSET=$fSet -M BUCKET=$bucketPath -M PROG=$recallProg -N $nodes
+$gpfsPath/mmapplypolicy $s3Path -P $recPol $recPolOpts -M FILESETCLAUSE="$fsetClause" -M BUCKET="$bucketPath" -M PROG="$recallProg" -N "$nodes" $tFlag
 rc=$?
 
-echo -e "\n\nINFO: recall finished"
+echo -e "\n\nINFO: recall finished (rc=$rc)"
 echo -e "======================================================================================\n"
 
 sleep 5
 
+
+### start setAttr
 echo "INFO: Starting setting object restore attribute on nodes $nodes for fileset $fSet "
-$gpfsPath/mmapplypolicy $s3Path -P $setAttrPol --single-instance -M FSET=$fSet -M BUCKET=$bucketPath -M PROG=$setAttrProg -N $nodes
+$gpfsPath/mmapplypolicy $s3Path -P $setAttrPol $setAttrPolOpts -M FILESETCLAUSE="$fsetClause" -M BUCKET="$bucketPath" -M PROG="$setAttrProg" -N "$nodes" $tFlag
 (( rc=rc+$? ))
 
 
 echo -e "\n\n$(date) Glacier restore finished rc=$rc"
+
+exit $rc
 
 
