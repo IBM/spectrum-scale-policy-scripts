@@ -12,6 +12,8 @@ This project includes automation scripts and IBM Storage Scale policies to manag
 
 Foundational information for managing migration and restores for S3 Glacier objects are provided in the [noobaaGlacier project](../noobaaGlacier). This project provides scripts and associated ILM policies that allow managing migration and restores out-of-the-box.
 
+This project is released under [Apache License 2.0](../LICENSE)
+
 
 ## System environment
 
