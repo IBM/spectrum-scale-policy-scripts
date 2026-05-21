@@ -14,17 +14,9 @@ define(is_migrated, (MISC_ATTRIBUTES LIKE '%V%'))
 
 /* list files with restore request that are not migrated and invoke setExpire script to set user.noobaa.restore.expiry and remove user.noobaa.restore.request */
 RULE 'extlist' EXTERNAL LIST 'setExpiry' EXEC 'PROG'
-RULE 'listFiles' LIST 'setExpiry' FOR FILESET('FSET') WHERE
+RULE 'listFiles' LIST 'setExpiry' FILESETCLAUSE WHERE
   NOT (exclude_list) AND
   PATH_NAME like '%BUCKET/%' AND
   xattr('user.storage_class') = 'GLACIER' AND
   NOT (is_migrated) AND
   xattr('user.noobaa.restore.request') IS NOT NULL 
-
-/*Invokation:
-# mmapplypolicy [path-or-device] -P setexpire.pol -m [num] -N [nodes] -B [bucket-size] --single-instance
--m number of parallel threads per node
--N nodes exuting the policy
--B bucket-size per thread, between 1000 and 20000
-*/
-
