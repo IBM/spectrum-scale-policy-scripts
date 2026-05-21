@@ -16,17 +16,10 @@ RULE 'extPool' EXTERNAL POOL 'ltfs' EXEC '/opt/ibm/ltfsee/bin/eeadm' OPTS '-p TA
 /* Limit bucket-size to 20 GB, value given in KB */
 SIZE 20971520
 
-RULE 'migGlacier' MIGRATE FROM POOL 'system' TO POOL 'ltfs' FOR FILESET('FSET') WHERE
+RULE 'migGlacier' MIGRATE FROM POOL 'system' TO POOL 'ltfs' FILESETCLAUSE WHERE
   FILE_SIZE > 0 AND 
   PATH_NAME LIKE '%BUCKET/%' AND
   xattr('user.storage_class') = 'GLACIER' AND
   NOT (is_migrated) AND
   ((  xattr('user.noobaa.restore.request') IS NULL AND xattr('user.noobaa.restore.expiry') IS NULL ) OR
       CURRENT_TIMESTAMP >= TIMESTAMP(CONCAT(CONCAT(SUBSTR(xattr('user.noobaa.restore.expiry'), 0, 10), ' '), SUBSTR(xattr('user.noobaa.restore.expiry'), 12, 8))) )
-
-/*Invokation:
-# mmapplypolicy [path-or-device] -P migrate.pol -m [drives-1] -N [archiveNodes] -B [bucket-size]--single-instance
--m number of parallel threads per node, number of drives per node minus 1
--N nodes exuting the policy, archive nodes
--B bucket-size per thread, between 1000 and 20000
-*/
