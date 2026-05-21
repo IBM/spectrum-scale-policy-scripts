@@ -14,17 +14,9 @@ define(is_migrated, (MISC_ATTRIBUTES LIKE '%V%'))
 
 /* list files to be recalled and invoke the recall script */
 RULE 'extlist' EXTERNAL LIST 'recall' EXEC 'PROG'
-RULE 'listRec' LIST 'recall' FOR FILESET('FSET') WHERE
+RULE 'listRec' LIST 'recall' FILESETCLAUSE WHERE
   NOT (exclude_list) AND
   PATH_NAME like '%BUCKET/%' AND
   xattr('user.storage_class') = 'GLACIER' AND
   is_migrated AND
   xattr('user.noobaa.restore.request') IS NOT NULL 
-
-
-/*Invokation:
-# mmapplypolicy [path-or-device] -P recall.pol -m [drives-1] -N [archiveNodes] -B [bucket-size] --single-instance
--m number of parallel threads per node, number of drives per node minus 1
--N nodes exuting the policy, archive nodes
--B bucket-size per thread, between 1000 and 20000
-*/
