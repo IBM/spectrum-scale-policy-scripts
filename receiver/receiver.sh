@@ -57,6 +57,7 @@
 # 12/20/15 implementation for immutability, some streamlining of existing code
 # 12/21/15 create the general receiver
 # 06/26/20 Add name of the program to the output messages.
+# 09/10/26 tolerate multiple blanks when processing individual filenames
 
 #global variables for this script
 #----------------------------------
@@ -166,12 +167,10 @@ case $op in
        numEntries=$(wc -l $polFile | awk '{print $1}')
 	   system_log 1 "INFO: Start processing $numEntries files, outputfile=$OUTPUTFILE"
 	   user_log "INFO: Start processing $numEntries files, outputfile=$OUTPUTFILE"
-	   cat $polFile | while read line 
+	   cat $polFile | while IFS= read -r line; 
 	   do
-		 # use set to get file name, does tolerate blanks
-		 set $line
-		 shift 4
-		 fName="$*"
+		# tolerate file names with multiple blanks
+         fName="${line#*-- }"
 		 
 		 # perhaps check if file exists
 		 echo "$fName" >> $OUTPUTFILE
