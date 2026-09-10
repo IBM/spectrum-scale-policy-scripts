@@ -32,6 +32,7 @@
 # Change History
 # 6.5.2024 first implementation based on receiver script
 # 05/19/26 remove logging into log files - output written to STDOUT
+# 09/10/26 tolerate multiple blanks when processing filenames
 
 
 #Program specific global vars:
@@ -83,15 +84,13 @@ case $op in
 	   itemNum=0
        numEntries=$(wc -l $polFile | awk '{print $1}')
 	   echo "INFO: Start processing $numEntries files"
-	   cat $polFile | while read line 
+	   cat $polFile | while IFS= read -r line; 
 	   do
-		 # use set to get file name, does tolerate blanks
-		 set $line
-		 shift 4
-		 fName="$*"
-		 
+		# tolerate file names with multiple blanks
+         fName="${line#*-- }"
+
 		 # get restore.request days
-		 reqDays=$($gpfsPath/mmlsattr -n $restoreAttrName $fName | grep "$restoreAttrName" | cut -d'"' -f 2)
+		 reqDays=$($gpfsPath/mmlsattr -n $restoreAttrName "$fName" | grep "$restoreAttrName" | cut -d'"' -f 2)
 		 if [[ -z $reqDays ]]; then
 		   echo "  DEBUG: value for attribute $restoreAttrName of filename $fName is emtpy. Setting default $reqDaysDefault days"
 		   reqDays=$reqDaysDefault
@@ -101,13 +100,13 @@ case $op in
 		 expDate=$(date +"%Y-%m-%dT%H:%M:%S.000Z" -d "$DATE + $reqDays day")
 		 
 		 # set expiration time
-		 if ! $gpfsPath/mmchattr --set-attr $expireAttrName="$expDate" $fName 2>&1; then
+		 if ! $gpfsPath/mmchattr --set-attr $expireAttrName="$expDate" "$fName" 2>&1; then
 		   echo "  ERROR: setting attribute $expireAttrName=$expDate for $fName"
 		   (( rc += 1 ))
          fi
 
 		 # remove restore attr
-		 if ! $gpfsPath/mmchattr --delete-attr $restoreAttrName $fName 2>&1; then 
+		 if ! $gpfsPath/mmchattr --delete-attr $restoreAttrName "$fName" 2>&1; then 
 		   echo "  ERROR: deleting attribute $restoreAttrName for $fName"
 		   (( rc += 1 ))
          fi
