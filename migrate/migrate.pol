@@ -1,0 +1,31 @@
+
+/* define macro for access_age */
+define( access_age,(DAYS(CURRENT_TIMESTAMP) - DAYS(ACCESS_TIME)) )
+
+/* define space management attrs */
+define( is_resident,(MISC_ATTRIBUTES NOT LIKE '%M%') )
+define(is_migrated, (MISC_ATTRIBUTES LIKE '%V%'))
+define( is_premigrated,(MISC_ATTRIBUTES LIKE '%M%' AND MISC_ATTRIBUTES NOT LIKE '%V%') )
+
+/* Common excludes with Spectrum Archive */
+RULE 'exclude' EXCLUDE WHERE 
+  ( PATH_NAME LIKE '%/.SpaceMan/%' OR
+   PATH_NAME LIKE '%/.ltfsee/%' OR 	
+   PATH_NAME LIKE '%/.mmSharedTmpDir/%' OR
+   PATH_NAME LIKE '%/.snapshots/%' OR
+   PATH_NAME LIKE '%/default_obj/%' OR
+   PATH_NAME LIKE '%/swifthlm/%' OR
+   PATH_NAME LIKE '%/.noobaa-nsfs%/%' )
+
+/* define external pool */
+RULE 'extpool' EXTERNAL POOL 'ltfs' EXEC '/opt/ibm/ltfsee/bin/eeadm' 		
+OPTS '-p TAPEPOOL' 
+SIZE 10485760							
+
+/* Migration rule */
+RULE 'mig' MIGRATE FROM POOL 'system' TO POOL 'ltfs' FOR FILESET ('FSET') WEIGHT (access_age)
+WHERE (KB_ALLOCATED > 0) AND 
+PATH_NAME LIKE '%BUCKET/%' 
+/* AND xattr('user.storage_class') NOT LIKE 'GLACIER' */
+
+
