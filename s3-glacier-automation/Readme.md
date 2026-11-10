@@ -178,10 +178,25 @@ The migration script can be executed like this:
 The migration script essentially executes the [migration policy](migrate.pol) provided with this project. Some of the parameters defined in the migration script are directly passed to the migration policy. 
 
 
-To automate migration of S3 Glacier objects to tape, the `mig-glacier.sh` script can be scheduled. Here is an example for scheduling migration using`cron` 4 times a day. The output of the script is logged in `/var/log/mig-glacier.log`:
+To automate migration of S3 Glacier objects to tape, the `mig-glacier.sh` script can be scheduled. Here is an example for scheduling migration using`cron` 4 times a day. The output of the script is logged in `/var/log/glacier/mig-glacier.log`:
+
+Create the log directory (if not already exists):
 
 ```
-0  0,6,12,18  *  *  * /usr/local/bin/mig-glacier.sh >> /var/log/mig-glacier.log 2>&1
+# mkdir /var/log/glacier
+``` 
+
+Open `crontab`
+
+```
+# crontab -e
+```
+
+Add the following line
+
+```
+# migrate every 6 hours starting at 0 AM
+0  0,6,12,18  *  *  * /usr/local/bin/mig-glacier.sh >> /var/log/glacier/mig-glacier.log 2>&1
 ```
 
 
@@ -191,6 +206,7 @@ If the buckets are not in the same base path, then create multiple copies of thi
 
 The migration of Glacier objects that were identified by the migration policy is executed by all Storage Archive nodes. If there are multiple Storage Archive nodes that should execute the migration policy, then install the scripts and policies on all Storage Archive nodes in the same path and set the parameter `nodes` in the `funcs-glacier.sh` script accordingly. Running the policy on multiple nodes may speed up the policy scan and file processing.
 
+Consider rotating the log created by the schedule in file `/var/log/glacier/mig-glacier.log`, see section [Rotating logs](#Rotating-logs). 
 
 
 ## Recall
@@ -216,10 +232,25 @@ The restore script executes the [recall policy](recall.pol) that recalls objects
 Subsequently, the restore script executes the [set attributes policy](setattr.pol) that sets file attributes for recalled objects using the [set attributes script](setattr.sh). Some of the parameters defined in the restore script are directly passed to the recall and set attribute policies. 
 
 
-To automate restore of S3 Glacier objects requested for restore, the `rest-glacier.sh` script can be scheduled. Here is an example for scheduling restore using`cron` 4 times a day. The output of the script is logged in `/var/log/rest-glacier.log`:
+To automate restore of S3 Glacier objects requested for restore, the `rest-glacier.sh` script can be scheduled. Here is an example for scheduling restore using`cron` 4 times a day. The output of the script is logged in `/var/log/glacier/rest-glacier.log`:
+
+Create the log directory (if not already exists):
 
 ```
-0  3,9,15,21  *  *  * /usr/local/bin/rest-glacier.sh >> /var/log/rest-glacier.log 2>&1
+# mkdir /var/log/glacier
+``` 
+
+Open `crontab`
+
+```
+# crontab -e
+```
+
+Add the following line
+
+```
+# restore every 6 hours starting at 3 AM
+0  3,9,15,21  *  *  * /usr/local/bin/rest-glacier.sh >> /var/log/glacier/rest-glacier.log 2>&1
 ```
 
 
@@ -229,6 +260,49 @@ If the buckets are not in the same base path, then create multiple copies of thi
 
 
 The recall of Glacier objects that were identified by the recall policy is executed by all Storage Archive nodes. If there are multiple Storage Archive nodes that should execute the recall policy, then install the scripts and policies on all Storage Archive nodes in the same path and set the parameter `nodes` in the `funcs-glacier.sh` script accordingly. Running the policy on multiple nodes may speed up the policy scan and file processing.
+
+Consider rotating the log created by the schedule in file `/var/log/glacier/rest-glacier.log`, see section [Rotating logs](#Rotating-logs). 
+
+
+## Rotating logs
+
+When using the scheduler as shown in the example above, log files are create in directory `/var/log/glacier/`. These logs files can be truncated an eventually deleted using `logrotate`. 
+
+Make sure `logrotate` and `logrotate.timer` are active:
+
+```
+# systemctl status logrotate
+# systemctl status logrotate.time
+```
+
+Note, the `logrotate` service my be not be active, but the service `logrotate.time` must be active to invoke `logrotate`. 
+
+Create a logrotate configuration to rotate the logs in `/var/log/glacier/` that are larger than 5 MB. This configuration keep 3 versions of the rotated logs in a compressed manner. To create a logrotate configuration open a new file:
+
+```
+vi /etc/logrotate.d/glacier
+```
+
+Enter the following content:
+
+```
+/var/log/glacier/*.log {
+  size 5M
+  rotate 3
+  compress
+  missingok
+  notifempty
+}
+```
+
+Check that the configuration is clean:
+
+```
+# logrotate -v /etc/logrotate.d/glacier
+```
+
+
+**Note:** the logrotate parameter `size 5M` **does not continuously monitor the file size**. Rotation only occurs when `logrotate` is executed and discovers that the file is at least 5 MB. RHEL 9 commonly invokes logrotate through a systemd timer.
 
 
 -------------------
